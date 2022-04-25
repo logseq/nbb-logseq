@@ -1,0 +1,17 @@
+{:deps
+ {nbb.build/nbb.build {:local/root "../nbb/build"}
+  nbb/nbb
+  #_{:git/url "https://github.com/logseq/nbb"
+   :git/sha "0a9a8e96142d0d8fedc4ab7a410d8c822293a149"}
+  {:local/root "../nbb"}
+  datascript/deps {:local/root "../nbb/features/datascript"}
+  datascript-transit/deps {:local/root "../nbb/features/datascript-transit"}}
+ :tasks
+ {:requires ([babashka.fs :as fs]
+             [nbb.build :as build])
+
+  clean (fs/delete-tree "lib")
+
+  release {:depends [clean]
+           :doc "Compiles release build."
+           :task (build/release *command-line-args*)}}}
