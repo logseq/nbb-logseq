@@ -1,11 +1,17 @@
 {:deps
- {nbb.build/nbb.build {:local/root "../nbb/build"}
+ {nbb.build/nbb.build
+  {:git/url "https://github.com/logseq/nbb"
+   :git/sha "83ffbbecb2a76e64baa673fc2f28cfa9b4ce294d"
+   :deps/root "build"}
+  #_{:local/root "../nbb/build"}
   nbb/nbb
-  #_{:git/url "https://github.com/logseq/nbb"
-   :git/sha "0a9a8e96142d0d8fedc4ab7a410d8c822293a149"}
-  {:local/root "../nbb"}
-  datascript/deps {:local/root "../nbb/features/datascript"}
-  datascript-transit/deps {:local/root "../nbb/features/datascript-transit"}}
+  {:git/url "https://github.com/logseq/nbb"
+   :git/sha "83ffbbecb2a76e64baa673fc2f28cfa9b4ce294d"}
+  #_{:local/root "../nbb"}
+  datascript/deps {:local/root "features/datascript"}
+  datascript-transit/deps {:local/root "features/datascript-transit"}
+  linked/deps {:local/root "features/linked"}
+  cljs-time/deps {:local/root "features/cljs-time"}}
  :tasks
  {:requires ([babashka.fs :as fs]
              [nbb.build :as build])

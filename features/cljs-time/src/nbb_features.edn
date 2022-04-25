@@ -1,0 +1,7 @@
+[{:name logseq/cljs-time
+  :namespaces [cljs-time.core cljs-time.coerce cljs-time.format]
+  :js "./nbb_cljs_time.js"
+  :shadow-config
+  {:modules
+   {:nbb_cljs_time {:init-fn nbb.impl.cljs-time/init
+                    :depends-on #{:nbb_core :nbb_goog_string}}}}}]
