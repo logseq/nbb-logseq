@@ -1,4 +1,5 @@
-{:deps
+{:paths ["script"]
+ :deps
  {nbb.build/nbb.build
   {:git/url "https://github.com/logseq/nbb"
    :git/sha "83ffbbecb2a76e64baa673fc2f28cfa9b4ce294d"
@@ -20,4 +21,6 @@
 
   release {:depends [clean]
            :doc "Compiles release build."
-           :task (build/release *command-line-args*)}}}
+           :task (build/release *command-line-args*)}
+
+  test nbb-feature-tests/main}}
