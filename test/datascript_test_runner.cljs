@@ -1,4 +1,4 @@
-(ns test-runner
+(ns datascript-test-runner
   (:require [cljs.test :as t]
             [nbb.core :as nbb]
             [datascript.test.query]
