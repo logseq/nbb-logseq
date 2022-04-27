@@ -9,9 +9,18 @@
   {:git/url "https://github.com/logseq/nbb"
    :git/sha "63d8f2defad1a4ea880c892670be078ea68b3ba2"}
   #_{:local/root "../nbb"}
-  datascript/deps {:local/root "features/datascript"}
-  datascript-transit/deps {:local/root "features/datascript-transit"}
-  linked/deps {:local/root "features/linked"}
+  datascript/deps
+  {:git/url "https://github.com/babashka/nbb-features"
+   :git/sha "7af8569a7f932af2cde5f8677133915540ab0c49"
+   :deps/root "features/datascript"}
+  datascript-transit/deps
+  {:git/url "https://github.com/babashka/nbb-features"
+   :git/sha "7af8569a7f932af2cde5f8677133915540ab0c49"
+   :deps/root "features/datascript-transit"}
+  linked/deps
+  {:git/url "https://github.com/babashka/nbb-features"
+   :git/sha "7af8569a7f932af2cde5f8677133915540ab0c49"
+   :deps/root "features/linked"}
   cljs-time/deps {:local/root "features/cljs-time"}}
  :tasks
  {:requires ([babashka.fs :as fs]

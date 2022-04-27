@@ -1,7 +1,0 @@
-[{:name logseq/linked
-  :namespaces [linked.core]
-  :js "./nbb_linked.js"
-  :shadow-config
-  {:modules
-   {:nbb_linked {:init-fn nbb.impl.linked/init
-                 :depends-on #{:nbb_core}}}}}]
