@@ -1,10 +1,10 @@
 ## Logseq user description
 
-`nbb-logseq` allows for [easy ClojureScript scripting on
-Node.js](https://github.com/babashka/nbb) with features for Logseq. Since logseq
-is primarily written with [ClojureScript](https://clojurescript.org/), this
-scripting environment has capabilities that are not possible in any other
-environment. For example, [see here](#TODO) for a script that queries any logseq
+`nbb-logseq` provides [easy CLJS scripting on
+Node.js](https://github.com/babashka/nbb) for Logseq. Since logseq is primarily
+written with [ClojureScript](https://clojurescript.org/), this scripting
+environment has capabilities that are not possible in any other environment. For
+example, [see here](examples/#query.cljs) for a script that queries any logseq
 graph.
 
 ## Clojure user description
