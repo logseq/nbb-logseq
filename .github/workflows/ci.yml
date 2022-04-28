@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      # Fetch tag history for git describe to work
+      - run: git fetch --tags
+      - run: git tag -l
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
@@ -18,10 +21,10 @@ jobs:
         uses: turtlequeue/setup-babashka@v1.3.0
         with:
           babashka-version: 0.8.1
-      - name: Build release
-        run: bb release
-      - name: Run feature tests
-        run: bb test
+      # - name: Build release
+      #   run: bb release
+      # - name: Run feature tests
+      #   run: bb test
       - name: Authenticate with registry
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
