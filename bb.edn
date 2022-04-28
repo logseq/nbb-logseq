@@ -56,5 +56,5 @@
                 (do
                   (println "Releasing")
                   (run 'release)
-                  (shell "npm publish"))
+                  (shell "npm publish --access public"))
                 (println "Skipping release."))}}}
