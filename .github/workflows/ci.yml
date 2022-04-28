@@ -22,3 +22,8 @@ jobs:
         run: bb release
       - name: Run feature tests
         run: bb test
+      - name: Authenticate with registry
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - name: NBB_CLI_NAME=nbb-logseq bb ci:publish

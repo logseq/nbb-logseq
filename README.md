@@ -1,4 +1,5 @@
-## Logseq user description
+## Description
+### For Logseq users
 
 `nbb-logseq` provides [easy CLJS scripting on
 Node.js](https://github.com/babashka/nbb) for Logseq. Since logseq is primarily
@@ -7,7 +8,7 @@ environment has capabilities that are not possible in any other environment. For
 example, [see here](examples/#query.cljs) for a script that queries any logseq
 graph.
 
-## Clojure user description
+### For Clojure users
 
 `nbb-logseq` is a custom version of [nbb](https://github.com/babashka/nbb) that
 bundles support for datascript, datascript-transit and a couple other cljs

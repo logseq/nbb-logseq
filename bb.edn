@@ -22,9 +22,11 @@
    :git/sha "7af8569a7f932af2cde5f8677133915540ab0c49"
    :deps/root "features/linked"}
   cljs-time/deps {:local/root "features/cljs-time"}}
+
  :tasks
  {:requires ([babashka.fs :as fs]
-             [nbb.build :as build])
+             [nbb.build :as build]
+             [clojure.string :as str])
 
   clean (fs/delete-tree "lib")
 
@@ -32,4 +34,27 @@
            :doc "Compiles release build."
            :task (build/release *command-line-args*)}
 
-  test nbb-feature-tests/main}}
+  test nbb-feature-tests/main
+
+  ;; Publish tasks copied from nbb
+  current-tag (->> (shell {:out :string} "git describe")
+                   :out
+                   str/trim
+                   (re-matches (re-pattern "^v\\d+\\.\\d+\\.\\d+\\S*")))
+
+  current-branch (->> (shell {:out :string} "git rev-parse --abbrev-ref HEAD")
+                      :out
+                      str/trim)
+
+  ci:is-release {:depends [current-tag current-branch]
+                 :task (and current-tag (= "main" current-branch))}
+
+  ci:publish {:doc "Publishes release build to npm"
+              :depends [ci:is-release]
+              :task
+              (if ci:is-release
+                (do
+                  (println "Releasing")
+                  (run 'release)
+                  (shell "npm publish"))
+                (println "Skipping release."))}}}
