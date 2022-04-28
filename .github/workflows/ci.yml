@@ -26,4 +26,5 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
-      - name: NBB_CLI_NAME=nbb-logseq bb ci:publish
+      - name: Publish package if a release tag
+        run: NBB_CLI_NAME=nbb-logseq bb ci:publish
