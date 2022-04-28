@@ -12,8 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       # Fetch tag history for git describe to work
-      - run: git fetch --tags
+      - run: git fetch --tags -f
       - run: git tag -l
+      - run: git describe
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
