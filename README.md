@@ -1,0 +1,51 @@
+## Logseq user description
+
+`nbb-logseq` allows for [easy ClojureScript scripting on
+Node.js](https://github.com/babashka/nbb) with features for Logseq. Since logseq
+is primarily written with [ClojureScript](https://clojurescript.org/), this
+scripting environment has capabilities that are not possible in any other
+environment. For example, [see here](#TODO) for a script that queries any logseq
+graph.
+
+## Clojure user description
+
+`nbb-logseq` is a custom version of [nbb](https://github.com/babashka/nbb) that
+bundles support for datascript, datascript-transit and a couple other cljs
+libraries that are useful to logseq. A good amount of the datascript API is
+available as [seen by its
+tests](https://github.com/babashka/nbb-features/blob/main/test/features/datascript/test_runner.cljs).
+Since nbb only loads features/libraries when they are required, users can write
+datascript based CLIs without concern of loading the other libraries.
+
+## Usage
+
+Install `nbb-logseq` from npm:
+
+`npm install @logseq/nbb-logseq -g`
+
+Omit `-g` for a local install.
+
+All the usage examples from https://github.com/babashka/nbb#usage apply to
+`nbb-logseq` e.g.
+
+```clojure
+$ nbb-logseq -e '(+ 1 2 3)'
+6
+```
+
+For examples that are specific to `nbb-logseq`, see the [examples directory](examples).
+
+## Versioning
+
+`nbb-logseq` follows the same versioning as `nbb`. In other words, an 0.4.0 for
+`nbb-logseq` provides `nbb` 0.4.0 with the additional libraries.
+
+## Contributing
+
+Example contributions are welcome. For feature contributions, please discuss
+them first as this is a low level library that will be relied on by multiple
+CLIs.
+
+## LICENSE
+
+See LICENSE.md
