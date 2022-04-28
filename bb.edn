@@ -40,7 +40,7 @@
   current-tag (->> (shell {:out :string} "git describe")
                    :out
                    str/trim
-                   (re-matches (re-pattern "^v\\d+\\.\\d+\\.\\d+\\S*")))
+                   (re-matches (re-pattern "^v\\d+\\.\\d+\\.\\d+")))
 
   current-branch (->> (shell {:out :string} "git rev-parse --abbrev-ref HEAD")
                       :out
