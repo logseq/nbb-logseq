@@ -6,7 +6,7 @@
   "bin": {
     "nbb-logseq": "./lib/nbb_main.js"
   },
-  "description": "Babashka-like tool for Node.js. with additional features enabled",
+  "description": "Nbb with additional libraries like datascript included",
   "dependencies": {
     "import-meta-resolve": "^1.1.1"
   },
@@ -14,6 +14,15 @@
     "type": "git",
     "url": "https://github.com/logseq/nbb-logseq"
   },
+  "keywords": [
+    "logseq",
+    "knowledge graph",
+    "clojurescript",
+    "datalog",
+    "datascript",
+    "nbb"
+  ],
+  "license": "MIT",
   "files": [
     "README.md",
     "lib"
