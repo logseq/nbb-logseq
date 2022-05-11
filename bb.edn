@@ -37,6 +37,31 @@
 
   test nbb-feature-tests/main
 
+  update-nbb
+  {:desc "Update to latest nbb tag"
+   :extra-deps {borkdude/rewrite-edn {:mvn/version "0.2.0"}}
+   :requires ([borkdude.rewrite-edn :as r])
+   :task
+   (let [update-bb-dep
+         (fn [dep dep-map]
+           (let [nodes (-> "bb.edn" slurp r/parse-string)]
+             (spit "bb.edn"
+                   (str (reduce (fn [acc [k v]]
+                                  (r/assoc-in acc [:deps dep k] v))
+                                nodes
+                                dep-map)))))
+         [_ sha tag]
+         (->> (shell {:out :string} "git ls-remote --heads --tags https://github.com/babashka/nbb.git")
+              :out
+              str/split-lines
+              last
+              (re-matches (re-pattern "(\\S+)\\trefs/tags/([v.0-9]+).*")))]
+     (assert (and sha tag) "Sha and tag must exist to continue")
+     (update-bb-dep 'nbb/nbb {:git/sha sha :git/tag tag})
+     (update-bb-dep 'nbb.build/nbb.build {:git/sha sha})
+     (println "Update nbb to" tag)
+     (shell "git commit -m" (str "Update nbb to " tag) "."))}
+
   ;; Publish tasks copied from nbb
   current-tag (->> (shell {:out :string} "git describe")
                    :out
