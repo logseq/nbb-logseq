@@ -62,6 +62,14 @@
      (println "Update nbb to" tag)
      (shell "git commit -m" (str "Update nbb to " tag) "."))}
 
+  publish
+  {:desc "Update package.json, git tag and push to CI for release"
+   :task
+   (let [version (or (first *command-line-args*)
+                     (throw (ex-info "No version given" {})))]
+     (shell "npm version" version)
+     (shell "git push --atomic origin main" (str "v" version)))}
+
   ;; Publish tasks copied from nbb
   current-tag (->> (shell {:out :string} "git describe")
                    :out
