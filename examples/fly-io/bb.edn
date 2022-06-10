@@ -1,0 +1,35 @@
+{:tasks
+ {:init
+  (defn- get-app-name []
+    (second (re-find (re-pattern "app = \"([\\S]+)\"")
+                     (slurp "fly.toml"))))
+  :requires
+  ([babashka.fs :as fs])
+
+  write-deps
+  {:doc "Write nbb dependencies to folder"
+   :task (do
+           (shell "bb --config nbb.edn uberjar nbb-deps.jar")
+           (fs/create-dirs "nbb_deps")
+           (fs/unzip "nbb-deps.jar" "nbb_deps")
+           (fs/delete "nbb-deps.jar"))}
+
+  query
+  {:requires ([org.httpkit.client :as http])
+   :doc "Runs a query against deployed server"
+   :task (let [query (or (first *command-line-args*)
+                         (throw (ex-info "No query given" {})))
+               resp (deref
+                     (http/get
+                      (format "%s/q"
+                              (str "https://" (get-app-name) ".fly.dev"))
+                      {:query-params {:q query}}))]
+           (if (= 200 (:status resp))
+             (print (:body resp))
+             (prn resp)))}
+  print-query
+  {:doc "Prints url for query against deployed server"
+   :task
+   (let [url (format "%s/q"
+                     (str "https://" (get-app-name) ".fly.dev"))]
+     (print (str url "?q=" (java.net.URLEncoder/encode (first *command-line-args*)))))}}}
