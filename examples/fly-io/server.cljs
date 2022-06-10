@@ -1,11 +1,11 @@
 (ns server
+  "Starts a web server that can process queries for graph at resources/graph"
   (:require
    ["express$default" :as express]
    [clojure.pprint :as pprint]
-   [clojure.string :as string]
    [clojure.edn :as edn]
    [logseq.graph-parser.cli :as gp-cli]
-   [logseq.graph-parser :as graph-parser]
+   [logseq.db.rules :as rules]
    [datascript.core :as d]))
 
 (def app (express))
@@ -25,23 +25,19 @@
                (let [query (or (some-> req .-query .-q js/decodeURI edn/read-string)
                                ;; default to a query likely to provide results
                                '[:find (pull ?b [:block/name])
-                                         :where [?b :block/name]])
-                     _ (println "Query:" query)
+                                 :where [?b :block/name]])
+                     add-rules? (not (contains? (set query) :in))
+                     query' (if add-rules? (into query [:in '$ '%]) query)
+                     _ (println "Query:" (pr-str query'))
                      res (map first
-                              (d/q query @@db-conn))]
+                              (apply d/q query' @@db-conn
+                                (if add-rules? [(vals rules/query-dsl-rules)] [])))]
                  (with-out-str
                    (pprint/pprint res))))))
 
 (.listen app port
          (fn []
            (println "Listening on port" port)
-           ;; TODO: Move non-git files fetch into cli ns
-           (let [files (->> (gp-cli/sh ["find" graph-dir "-type" "f"] {:stdio nil})
-                            .-stdout
-                            string/split-lines
-                            (mapv #(hash-map :file/path % :file/content (gp-cli/slurp %)))
-                            graph-parser/filter-files)
-                 {:keys [conn files]}
-                 (gp-cli/parse-graph graph-dir {:files files})]
+           (let [{:keys [conn files]} (gp-cli/parse-graph graph-dir)]
              (println "Finished loading graph with" (count files) "files")
              (reset! db-conn conn))))

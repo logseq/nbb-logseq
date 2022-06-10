@@ -34,3 +34,7 @@ $ nbb-logseq query.cljs docs "[:find ?n :where [?b :block/name ?n]]"
  "may 31st, 2020"
  ...
 ```
+
+## fly.io example
+
+See [its README](fly-io/README.md).
