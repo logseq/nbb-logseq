@@ -1,0 +1,42 @@
+<!doctype html>
+
+<title>Logseq Graph Query Service</title>
+<meta charset="utf-8"/>
+<link rel=stylesheet href="css/docs.css">
+
+<link rel="stylesheet" href="css/codemirror.css">
+<script src="js/codemirror.js"></script>
+<script src="js/closebrackets.js"></script>
+<script src="js/matchbrackets.js"></script>
+<script src="js/clojure.js"></script>
+<style>.CodeMirror {background: #f8f8f8;}</style>
+
+<article>
+<h2>Query %s graph</h2>
+<p>Queries are written in the <a
+href="https://docs.datomic.com/on-prem/query/query.html">Datomic dialect of
+Datalog</a>. Queries use the same datalog rules as the Logseq app. To learn more
+about datalog, see <a href="http://www.learndatalogtoday.org/">this
+tutorial</a>.</p>
+<form id="query" action="/q">
+  <textarea id="code" name="q" autofocus=true>
+[:find (pull ?b [:block/name])
+ :where [?b :block/name]]
+</textarea></form>
+<button style="margin-top: 1em; margin-bottom: 1em;" form="query">
+  Submit
+</button>
+<p>
+<a href="https://github.com/logseq/nbb-logseq/tree/main/examples/fly-io">Source</a >
+</p>
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+          autoCloseBrackets: true,
+          lineNumbers: true,
+          matchBrackets: true,
+          mode: 'text/x-clojure',
+          extraKeys: {Tab: false}
+      });
+    </script>
+
+  </article>
