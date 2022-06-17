@@ -35,6 +35,10 @@ $ nbb-logseq query.cljs docs "[:find ?n :where [?b :block/name ?n]]"
  ...
 ```
 
-## fly.io example
+## fly.io http server example
 
 See [its README](fly-io/README.md).
+
+## multiple databases example
+
+See [its README](multiple-databases/README.md).
