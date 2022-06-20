@@ -18,7 +18,7 @@ Let's start by querying https://github.com/QWxleA/ulysses-logseq and https://git
 
 ```
 # Run default query
-$ yarn nbb-logseq -cp node_modules/@logseq/graph-parser/src:node_modules/@logseq/db/src multi_db.cljs https://github.com/QWxleA/ulysses-logseq https://github.com/pengx17/knowledge-garden
+$ yarn multiple-dbs https://github.com/QWxleA/ulysses-logseq https://github.com/pengx17/knowledge-garden
 Graph https://github.com/QWxleA/ulysses-logseq is already cloned
 Graph https://github.com/pengx17/knowledge-garden is already cloned
 ([{:block/name "waiting"}]
@@ -38,7 +38,7 @@ Graph https://github.com/pengx17/knowledge-garden is already cloned
  [{:block/name "now"}])
 
  # The script can also take an explicit query
- $ yarn nbb-logseq -cp node_modules/@logseq/graph-parser/src:node_modules/@logseq/db/src multi_db.cljs https://github.com/QWxleA/ulysses-logseq https://github.com/pengx17/knowledge-garden '[:find ?n :in $1 $2 :where [$1 ?b :block/name ?n] [$2 ?b2 :block/name ?n]]'
+ $ yarn multiple-dbs https://github.com/QWxleA/ulysses-logseq https://github.com/pengx17/knowledge-garden '[:find ?n :in $1 $2 :where [$1 ?b :block/name ?n] [$2 ?b2 :block/name ?n]]'
 Graph https://github.com/QWxleA/ulysses-logseq is already cloned
 Graph https://github.com/pengx17/knowledge-garden is already cloned
 #{["waiting"] ["wait"] ["doing"] ["done"] ["b"] ["contents"] ["later"]
@@ -53,7 +53,7 @@ Now let's try querying https://github.com/Xuanwo/Xuanwo and https://github.com/p
 ```
 # Both of these graphs use :type properties so let's see what each graph has there
 # Types from first graph:
-$ yarn nbb-logseq -cp node_modules/@logseq/graph-parser/src:node_modules/@logseq/db/src multi_db.cljs https://github.com/Xuanwo/Xuanwo https://github.com/pengx17/knowledge-garden '[:find ?val :in $1 $2 :where [$1 ?b :block/properties ?bp] [(get ?bp :type) ?val]]'
+$ yarn multiple-dbs https://github.com/Xuanwo/Xuanwo https://github.com/pengx17/knowledge-garden '[:find ?val :in $1 $2 :where [$1 ?b :block/properties ?bp] [(get ?bp :type) ?val]]'
 Graph https://github.com/Xuanwo/Xuanwo is already cloned
 Graph https://github.com/pengx17/knowledge-garden is already cloned
 #{["Iteration"] [#{"Database"}] [#{"Product"}] [#{"Iteration"}]
@@ -62,13 +62,13 @@ Graph https://github.com/pengx17/knowledge-garden is already cloned
   [#{"Product" "Linux"}] [#{"Project" "Database"}] [#{"Blog"}]}
 
 # Types from second graph:
-$ yarn nbb-logseq -cp node_modules/@logseq/graph-parser/src:node_modules/@logseq/db/src multi_db.cljs https://github.com/Xuanwo/Xuanwo https://github.com/pengx17/knowledge-garden '[:find ?val :in $1 $2 :where [$2 ?b :block/properties ?bp] [(get ?bp :type) ?val]]'
+$ yarn multiple-dbs https://github.com/Xuanwo/Xuanwo https://github.com/pengx17/knowledge-garden '[:find ?val :in $1 $2 :where [$2 ?b :block/properties ?bp] [(get ?bp :type) ?val]]'
 Graph https://github.com/Xuanwo/Xuanwo is already cloned
 Graph https://github.com/pengx17/knowledge-garden is already cloned
 #{["logseq theme"] [#{"blogpost"}] ["blogpost"]}
 
 # What types overlap?
-$ yarn nbb-logseq -cp node_modules/@logseq/graph-parser/src:node_modules/@logseq/db/src multi_db.cljs https://github.com/Xuanwo/Xuanwo https://github.com/pengx17/knowledge-garden '[:find ?val :in $1 $2 :where [$1 ?b :block/properties ?bp] [(get ?bp :type) ?val] [$2 ?b2 :block/properties ?bp2] [(get ?bp2 :type) ?val]]'
+$ yarn multiple-dbs https://github.com/Xuanwo/Xuanwo https://github.com/pengx17/knowledge-garden '[:find ?val :in $1 $2 :where [$1 ?b :block/properties ?bp] [(get ?bp :type) ?val] [$2 ?b2 :block/properties ?bp2] [(get ?bp2 :type) ?val]]'
 Graph https://github.com/Xuanwo/Xuanwo is already cloned
 Graph https://github.com/pengx17/knowledge-garden is already cloned
 #{}
