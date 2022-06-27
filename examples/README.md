@@ -42,3 +42,8 @@ See [its README](fly-io/README.md).
 ## multiple databases example
 
 See [its README](multiple-databases/README.md).
+
+## Additional repositories using nbb-logseq
+
+* https://github.com/logseq/graph-validator - github action
+* https://github.com/cldwalker/logseq-query - commandline tool
