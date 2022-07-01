@@ -36,6 +36,12 @@ $ nbb-logseq -e '(+ 1 2 3)'
 
 For examples that are specific to `nbb-logseq`, see the [examples directory](examples).
 
+## Projects using nbb-logseq
+
+* https://github.com/logseq/graph-validator - github action
+* https://github.com/cldwalker/logseq-query - commandline tool
+* https://github.com/logseq/bb-tasks/tree/main/src/logseq/bb_tasks/nbb - bb tasks that use nbb-logseq
+
 ## Versioning
 
 `nbb-logseq` follows the same versioning as `nbb`. In other words, an 0.4.0 for
