@@ -2,13 +2,13 @@
  :deps
  {nbb.build/nbb.build
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "60873d0857e60e7bd29d844769318689cd81b308"
+   :git/sha "34c2840a81777ef94746c4670490e751f6cdeaaf"
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
   nbb/nbb
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "60873d0857e60e7bd29d844769318689cd81b308"
-   :git/tag "v0.6.124"}
+   :git/sha "34c2840a81777ef94746c4670490e751f6cdeaaf"
+   :git/tag "v0.6.125"}
   #_{:local/root "../nbb"}
   datascript/deps
   {:git/url "https://github.com/babashka/nbb-features"
