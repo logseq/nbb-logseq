@@ -4,3 +4,4 @@ lib
 shadow-cljs.edn
 /report.html
 /test/libraries
+.nbb

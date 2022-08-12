@@ -47,11 +47,10 @@ To try this service locally on your Logseq graph:
 1. Install [babashka](https://github.com/babashka/babashka) >= 0.8.156.
 2. Install node.js >= 16.3.1.
 3. Run `npm install` to install npm dependencies.
-4. Run `bb install` to install cljs dependencies.
-5. Clone your graph: `git clone YOUR-GRAPH resources/graph`
+4. Clone your graph: `git clone YOUR-GRAPH resources/graph`
   * If you don't have a graph, try the Logseq docs
   graph with `git clone --depth 1 https://github.com/logseq/docs resources/graph.`
-6. Start the web server: `npm start`
+5. Start the web server: `npm start`
 
 Go to http://localhost:8092/ and query away!
 

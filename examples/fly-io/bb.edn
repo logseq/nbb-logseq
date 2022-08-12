@@ -20,25 +20,6 @@
       (second (re-find (re-pattern "app = \"([\\S]+)\"")
                        (slurp "fly.toml")))))
 
-  -write-nbb-deps
-  {:doc "Write nbb dependencies"
-   :task (do
-           (shell "bb --config nbb.edn uberjar nbb-deps.jar")
-           (fs/create-dirs "nbb_deps")
-           (fs/unzip "nbb-deps.jar" "nbb_deps")
-           (fs/delete "nbb-deps.jar"))}
-
-  install
-  {:doc "Install nbb dependencies"
-   :task (do
-           (fs/delete-tree "nbb_deps")
-           (run '-write-nbb-deps)
-           ;; only keep nbb_deps/logseq as the other dirs are not needed
-           (fs/move "nbb_deps" "nbb_deps.tmp")
-           (fs/create-dirs "nbb_deps")
-           (fs/move "nbb_deps.tmp/logseq" "nbb_deps")
-           (fs/delete-tree "nbb_deps.tmp"))}
-
   query
   {:doc "Runs a query against deployed server"
    :task (query* (str "https://" (get-app-name) ".fly.dev"))}

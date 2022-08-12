@@ -3,10 +3,10 @@
   "dependencies": {
     "express": "^4.18.1",
     "mldoc": "^1.4.0",
-    "@logseq/nbb-logseq": "^0.5.103"
+    "@logseq/nbb-logseq": "^0.7.133"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nbb-logseq -cp nbb_deps server.cljs"
+    "start": "nbb-logseq server.cljs"
   }
 }
