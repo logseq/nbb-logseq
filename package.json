@@ -1,6 +1,6 @@
 {
   "name": "@logseq/nbb-logseq",
-  "version": "0.6.125",
+  "version": "0.7.132",
   "type": "module",
   "main": "index.mjs",
   "bin": {
