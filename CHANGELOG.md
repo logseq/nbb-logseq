@@ -1,7 +1,10 @@
 ## Future versions
 
-* Versions map to nbb version as described in
+* Unless a version is noted below, versions map to nbb version as described in
   https://github.com/logseq/nbb-logseq/blob/main/README.md#versioning.
+
+## 0.7.133
+* 0.7.132 built bin/nbb-logseq incorrectly. This fixes that while still building off nbb 0.7.132
 
 ## 0.3.9-fe8b3eb
 

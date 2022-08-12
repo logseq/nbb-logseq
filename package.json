@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.mjs",
   "bin": {
-    "nbb-logseq": "./lib/nbb_main.js"
+    "nbb-logseq": "cli.js"
   },
   "description": "Nbb with additional libraries like datascript included",
   "dependencies": {
