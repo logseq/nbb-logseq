@@ -11,10 +11,15 @@
 (def format-ns (sci/create-ns 'cljs-time.format nil))
 
 (def core-namespace
-  {'now (copy-var t/now core-ns)})
+  {'now (copy-var t/now core-ns)
+   'date-time (copy-var t/date-time core-ns)
+   'year (copy-var t/year core-ns)
+   'month (copy-var t/month core-ns)
+   'day (copy-var t/day core-ns)})
 
 (def coerce-namespace
-  {'to-long (copy-var tc/to-long coerce-ns)})
+  {'to-long (copy-var tc/to-long coerce-ns)
+   'from-long (copy-var tc/from-long coerce-ns)})
 
 (def format-namespace
   {'unparse (copy-var tf/unparse format-ns)
