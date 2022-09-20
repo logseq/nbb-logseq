@@ -3,6 +3,9 @@
 * Unless a version is noted below, versions map to nbb version as described in
   https://github.com/logseq/nbb-logseq/blob/main/README.md#versioning.
 
+## 0.7.135
+* 0.7.135 nbb with added cljs-time fns thanks to @dom8509
+
 ## 0.7.133
 * 0.7.132 built bin/nbb-logseq incorrectly. This fixes that while still building off nbb 0.7.132
 

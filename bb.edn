@@ -40,7 +40,7 @@
   test nbb-feature-tests/main
 
   update-nbb
-  {:desc "Update to latest nbb tag"
+  {:doc "Update to latest nbb tag"
    :extra-deps {borkdude/rewrite-edn {:mvn/version "0.2.0"}}
    :requires ([borkdude.rewrite-edn :as r])
    :task
@@ -65,7 +65,7 @@
      (shell "git commit -m" (str "Update nbb to " tag) "."))}
 
   publish
-  {:desc "Update package.json, git tag and push to CI for release"
+  {:doc "Update package.json, git tag and push to CI for release"
    :task
    (let [version (or (first *command-line-args*)
                      (throw (ex-info "No version given" {})))]
