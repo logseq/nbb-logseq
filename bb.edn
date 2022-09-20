@@ -31,7 +31,9 @@
 
   clean (fs/delete-tree "lib")
 
-  release {:depends [clean]
+  npm-install (shell "npm install")
+
+  release {:depends [clean npm-install]
            :doc "Compiles release build."
            :task (build/release *command-line-args*)}
 
