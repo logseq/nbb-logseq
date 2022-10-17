@@ -34,13 +34,13 @@ $ nbb-logseq -e '(+ 1 2 3)'
 6
 ```
 
-For examples that are specific to `nbb-logseq`, see the [examples directory](examples).
-
 ## Projects using nbb-logseq
 
 * https://github.com/logseq/graph-validator - github action
 * https://github.com/cldwalker/logseq-query - commandline tool
 * https://github.com/logseq/bb-tasks/tree/main/src/logseq/bb_tasks/nbb - bb tasks that use nbb-logseq
+* https://github.com/dom8509/logseq-to-markdown - CLI to export graph to Hugo Markdown files
+* For more examples see the [examples directory](examples).
 
 ## Versioning
 
