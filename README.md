@@ -38,7 +38,7 @@ $ nbb-logseq -e '(+ 1 2 3)'
 
 * https://github.com/logseq/graph-validator - github action
 * https://github.com/cldwalker/logseq-query - commandline tool
-* https://github.com/logseq/bb-tasks/tree/main/src/logseq/bb_tasks/nbb - bb tasks that use nbb-logseq
+* https://github.com/logseq/bb-tasks#logseqbb-tasksnbb - bb tasks that use nbb-logseq
 * https://github.com/dom8509/logseq-to-markdown - CLI to export graph to Hugo Markdown files
 * For more examples see the [examples directory](examples).
 
