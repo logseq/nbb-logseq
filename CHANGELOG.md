@@ -3,6 +3,9 @@
 * Unless a version is noted below, versions map to nbb version as described in
   https://github.com/logseq/nbb-logseq/blob/main/README.md#versioning.
 
+## 1.1.155
+* 1.1.155 nbb with frankiesardo/linked cljs dep removed as it is no longer used by logseq
+
 ## 0.7.135
 * 0.7.135 nbb with added cljs-time fns thanks to @dom8509
 

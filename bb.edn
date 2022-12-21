@@ -18,10 +18,6 @@
   {:git/url "https://github.com/babashka/nbb-features"
    :git/sha "912ca86f1744b80d58d2c5c613df3a77d9f8624e"
    :deps/root "features/datascript-transit"}
-  linked/deps
-  {:git/url "https://github.com/babashka/nbb-features"
-   :git/sha "912ca86f1744b80d58d2c5c613df3a77d9f8624e"
-   :deps/root "features/linked"}
   cljs-time/deps {:local/root "features/cljs-time"}}
 
  :tasks
