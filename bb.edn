@@ -31,7 +31,11 @@
 
   release {:depends [clean npm-install]
            :doc "Compiles release build."
-           :task (build/release *command-line-args*)}
+           :task (do
+                   ;; Not having fresh copy fails build
+                   (fs/delete-if-exists "shadow-cljs.edn")
+                   (println "Building with nbb env vars:" (pr-str (select-keys (System/getenv) ["NBB_CLI_NAME" "NBB_NPM_LIB_NAME"])))
+                   (build/release *command-line-args*))}
 
   test nbb-feature-tests/main
 
