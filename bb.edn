@@ -88,9 +88,9 @@
   ci:publish {:doc "Publishes release build to npm"
               :depends [ci:is-release]
               :task
-              (if true #_ci:is-release
+              (if ci:is-release
                 (do
                   (println "Releasing")
                   (run 'release)
-                  #_(shell "npm publish --access public"))
+                  (shell "npm publish --access public"))
                 (println "Skipping release."))}}}
