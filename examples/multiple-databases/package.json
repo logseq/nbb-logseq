@@ -1,12 +1,10 @@
 {
   "dependencies": {
-    "@logseq/db": "https://github.com/logseq/logseq#workspace=@logseq/db&head=dev/yarn-workspaces",
-    "@logseq/graph-parser": "https://github.com/logseq/logseq#workspace=@logseq/graph-parser&head=dev/yarn-workspaces",
-    "@logseq/nbb-logseq": "0.5.103"
+    "@logseq/nbb-logseq": "^1.1.155",
+    "mldoc": "1.5.1"
   },
   "license": "MIT",
-  "packageManager": "yarn@3.2.1",
   "scripts": {
-    "multiple-dbs": "nbb-logseq -cp node_modules/@logseq/graph-parser/src:node_modules/@logseq/db/src multi_db.cljs"
+    "multiple-dbs": "nbb-logseq multi_db.cljs"
   }
 }

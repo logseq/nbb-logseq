@@ -5,8 +5,7 @@ capable of querying across multiple databases as [these tests demonstrate](https
 
 ## Setup
 
-* Install node.js >= 16.9 and yarn.
-  * This minimum version of node is needed in order to use corepack and run this repo under yarn 3.
+* Install node.js >= 16 and yarn.
 * Run `yarn install` to install npm dependencies.
 
 ## Usage
