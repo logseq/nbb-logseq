@@ -34,19 +34,26 @@ $ nbb-logseq -e '(+ 1 2 3)'
 6
 ```
 
-### Dependency Management
+## Dependency Management
 
 `nbb-logseq` can use libraries from both NPM and ClojureScript. For NPM
 libraries,  use `package.json` like you would in a Node.js project. For
 ClojureScript libraries, create a `nbb.edn` file and [install
 babashka](https://github.com/babashka/babashka#installation). The two main keys
 a `nbb.edn` file supports are `:deps` and `:paths`. See [babashka
-docs](https://book.babashka.org/#_paths_and_deps) for more. Logseq's
-graph-parser is a ClojureScript library so using it requires adding it to `:deps`
-in `nbb.edn`. For a quickstart with `nbb.edn`, copy [this
-nbb.edn](fly-io/nbb.edn) from the fly.io example. See [nbb's
+docs](https://book.babashka.org/#_paths_and_deps) for more about the format of
+this file and those keys. See [nbb's
 docs](https://github.com/babashka/nbb#dependencies) for more info about how
-dependencies work.
+nbb's dependencies generally work.
+
+### Logseq as a Dependency
+
+Logseq's graph parser is a ClojureScript library with npm dependencies. To use
+it as a dependency requires a `nbb.edn` for the ClojureScript code and a
+`package.json` for the npm dependencies. For a quickstart with these files, copy
+them from the [fly.io example](examples/fly-io). Note that Logseq code is fetched
+via git with `nbb.edn` so a specific commit and git repository can be
+specified.
 
 ## Projects using nbb-logseq
 

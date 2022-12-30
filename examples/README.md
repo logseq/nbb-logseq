@@ -42,3 +42,7 @@ See [its README](fly-io/README.md).
 ## multiple databases example
 
 See [its README](multiple-databases/README.md).
+
+## from js example
+
+See [its README](from-js/README.md).
