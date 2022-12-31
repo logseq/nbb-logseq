@@ -59,7 +59,7 @@ it"
     (let [[graph-dir node-type] args
           keep-node (when node-type
                       (or (get node-types node-type)
-                          (throw (ex-info (str "Invalid node-type. Valid node-types are"
+                          (throw (ex-info (str "Invalid node-type. Valid node-types are "
                                                (string/join ", " (keys node-types)))
                                           {}))))
           {:keys [asts]} (gp-cli/parse-graph graph-dir {:verbose false})]

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { loadFile } from '@logseq/nbb-logseq'
 
 // destructure JS object returned from .cljs file:
