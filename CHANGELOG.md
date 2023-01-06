@@ -3,6 +3,9 @@
 * Unless a version is noted below, versions map to nbb version as described in
   https://github.com/logseq/nbb-logseq/blob/main/README.md#versioning.
 
+## 1.1.157
+* 1.1.157 nbb with 4 new cljs-time fns for compatibility with logseq's :inputs
+
 ## 1.1.155
 * 1.1.155 nbb with frankiesardo/linked cljs library removed. Only supports Logseq >= 0.8.8
 
