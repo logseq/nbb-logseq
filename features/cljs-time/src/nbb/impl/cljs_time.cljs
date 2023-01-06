@@ -12,12 +12,16 @@ Remaining fns are used by the community"
 (def format-ns (sci/create-ns 'cljs-time.format nil))
 
 (def core-namespace
-  "Only now is used by logseq.graph-parser"
+  "Only now, days, today, minus and plus are used by logseq.graph-parser"
   {'now (copy-var t/now core-ns)
    'date-time (copy-var t/date-time core-ns)
    'year (copy-var t/year core-ns)
    'month (copy-var t/month core-ns)
-   'day (copy-var t/day core-ns)})
+   'day (copy-var t/day core-ns)
+   'days (copy-var t/days core-ns)
+   'today (copy-var t/today core-ns)
+   'minus (copy-var t/minus core-ns)
+   'plus (copy-var t/plus core-ns)})
 
 (def coerce-namespace
   "Only to-long is used by logseq.graph-parser"
