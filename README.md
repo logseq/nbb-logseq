@@ -78,3 +78,27 @@ CLIs.
 ## LICENSE
 
 See LICENSE.md
+
+## Development
+
+These sections for those developing this project.
+
+### QA local branch
+
+To QA that your branch works as expected on a dependent repository e.g.
+[logseq/graph-parser](https://github.com/logseq/logseq/tree/master/deps/graph-parser):
+
+* `bb release` in this repo to build a local release.
+* `yarn add /path/to/nbb-logseq` in a dependent's repo.
+* Run `yarn nbb-logseq FILE.cljs` to run a given file. The graph-parser can confirm all it's namespaces load nbb-logseq with `bb test:load-all-namespaces-with-nbb`.
+
+### Release process
+
+Steps to publish a new npm package:
+
+1. Update CHANGELOG.md if anything specific to nbb-logseq has been updated.
+2. Update nbb with `bb update-nbb` on https://github.com/babashka/nbb-features and confirm CI passes.
+  * This is done to confirm that datascript and datascript-transit tests pass.
+3. Update nbb with `bb update-nbb` on this repo and confirm CI passes.
+  * This is done to run the test suite passes which includes cljs-time tests.
+4. Run `bb publish X.Y.Z` where X.Y.Z is the version to publish. Push to github to publish.
