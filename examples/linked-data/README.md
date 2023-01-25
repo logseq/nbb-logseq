@@ -18,7 +18,7 @@ in to existing ones.
 The [write_rdf.cljs](write_rdf.cljs) script converts a subset of a Logseq graph
 to an rdf file. For example:
 
-```sh
+```bash
 $ git clone https://github.com/logseq/docs
 ...
 # By default the output format is written as turtle
@@ -33,6 +33,8 @@ Writing file docs.nt
 ```
 
 With an rdf file, you can setup a [SPARQL](https://en.wikipedia.org/wiki/SPARQL)
-endpoint so any client can query your data. [Dydra](https://dydra.com/) provides
-this service for free. For example, [logseq's
-docs](https://dydra.com/cldwalker/logseq-docs/@query) can be queried.
+endpoint so anyone can query your data. [Dydra](https://dydra.com/) provides
+this service for free. For example, you can query [logseq's docs
+here](https://dydra.com/cldwalker/logseq-docs/@query). See
+https://github.com/logseq/docs/tree/master/script for an up to date version of
+this script.
