@@ -19,6 +19,7 @@ The [write_rdf.cljs](write_rdf.cljs) script converts a subset of a Logseq graph
 to an rdf file. For example:
 
 ```bash
+# Clone a graph that has the ontological defaults of the script
 $ git clone https://github.com/logseq/docs
 ...
 # By default the output format is written as turtle
