@@ -73,7 +73,7 @@ and share it with others so they can install it on their `$PATH`.
 
 Community CLIs with a `nbb.edn`:
 
-* [logseq-graph-ast](examples/from-js#graph_astmjs) - CLI to print graph's ast data
+* [logseq-graph-ast](https://github.com/logseq/nbb-logseq/tree/main/examples/from-js#graph_astmjs) - CLI to print graph's ast data
 * [logseq-graph-validator](https://github.com/logseq/graph-validator#cli) - CLI to run validations on the current graph
 * https://github.com/cldwalker/logseq-clis - Collection of CLIs to run on graphs
 
