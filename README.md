@@ -57,12 +57,43 @@ specified.
 
 ## Projects using nbb-logseq
 
-* https://github.com/logseq/graph-validator - github action
+* https://github.com/logseq/graph-validator - github action and CLI
 * https://github.com/cldwalker/logseq-query - commandline tool
 * https://github.com/logseq/bb-tasks#logseqbb-tasksnbb - bb tasks that use nbb-logseq
 * https://github.com/dom8509/logseq-to-markdown - CLI to export graph to Hugo Markdown files
 * https://github.com/logseq/docs/tree/master/script - Scripts to query docs
 * For more examples see the [examples directory](examples).
+
+## CLIs
+
+Starting with version 1.2.168, `nbb-logseq` supports publishing node CLIs with
+a `nbb.edn`. This means that it's possible to write a script that uses [logseq's
+graph-parser](https://github.com/logseq/logseq/tree/master/deps/graph-parser)
+and share it with others so they can install it on their `$PATH`.
+
+Community CLIs with a `nbb.edn`:
+
+* [logseq-graph-ast](examples/from-js#graph_astmjs) - CLI to print graph's ast data
+* [logseq-graph-validator](https://github.com/logseq/graph-validator#cli) - CLI to run validations on the current graph
+* https://github.com/cldwalker/logseq-clis - Collection of CLIs to run on graphs
+
+### Install a CLI
+
+From any script directory that has a `nbb.edn`, install CLIs on `$PATH` with
+`yarn global add $PWD` or `npm i -g`. If using `yarn` and `~/.yarn/bin` is not
+on `$PATH`, add it to your shell's rc file e.g. `export
+PATH="$HOME/.yarn/bin:$PATH"`.
+
+### Build a CLI
+
+To convert a nbb-logseq cljs script into a CLI that others can install and use:
+
+* Create a wrapper `.mjs` file that invokes your nbb-logseq cljs script.
+  * Copy [the graph_ast.mjs example](examples/from-js/graph_ast.mjs) and change the cljs file inside it.
+* Add a `bin` entry to `package.json` that maps your CLI name to the cljs file.
+
+For a tutorial on doing the above, read [nbb's publish
+doc](https://github.com/babashka/nbb/tree/main/doc/publish).
 
 ## Versioning
 

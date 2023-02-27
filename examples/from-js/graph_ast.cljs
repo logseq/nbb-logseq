@@ -1,10 +1,9 @@
-(ns ast
+(ns graph-ast
   "Script that prints full ast of given graph. If given optional node-type
   argument, filters the ast to just print values of that node-type"
   (:require [clojure.pprint :as pprint]
             [clojure.string :as string]
             [clojure.walk :as walk]
-            [nbb.core :as nbb]
             [logseq.graph-parser.cli :as gp-cli]))
 
 (defn- url-node
@@ -49,34 +48,25 @@ it"
                               elem)
                             nodes)
                            @found)))))
-       (mapcat :ast)))
+       (mapcat :ast)
+       vec))
 
-(defn- print-ast
-  [args]
-  (if-not (<= 1 (count args) 2)
-    (println "Usage: $0 GRAPH-DIR [NODE-TYPE]\n\nValid node-types are"
+(defn -main
+  [& args]
+  (if (contains? (set args) "-h")
+    (println "Usage: $0 [GRAPH-DIR] [NODE-TYPE]\n\nValid node-types are"
              (string/join ", " (keys node-types)))
-    (let [[graph-dir node-type] args
+    (let [graph-dir (or (first args) ".")
+          node-type (second args)
           keep-node (when node-type
                       (or (get node-types node-type)
                           (throw (ex-info (str "Invalid node-type. Valid node-types are "
                                                (string/join ", " (keys node-types)))
                                           {}))))
           {:keys [asts]} (gp-cli/parse-graph graph-dir {:verbose false})]
-      (if node-type
-        (filter-ast asts keep-node)
-        asts))))
+      (pprint/pprint
+       (if node-type
+         (filter-ast asts keep-node)
+         asts)))))
 
-(defn cljs-print-ast
-  [args]
-  (pprint/pprint (print-ast args)))
-
-(defn js-print-ast
-  [args]
-  (clj->js (print-ast (js->clj args))))
-
-;; This is defined to allow calling file directly e.g. `nbb-logseq query.cljs ...`
-(when (and *command-line-args* (= nbb/*file* (:file (meta #'cljs-print-ast))))
-  (cljs-print-ast *command-line-args*))
-
-#js {:printAst js-print-ast}
+#js {:main -main}

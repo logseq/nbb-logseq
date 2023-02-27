@@ -1,13 +1,12 @@
 {
-  "name": "nbb-logseq-from-js",
+  "name": "@logseq/nbb-logseq-from-js",
   "version": "1.0.0",
-  "type": "module",
   "dependencies": {
-    "@logseq/nbb-logseq": "^1.1.155",
+    "@logseq/nbb-logseq": "^1.2.168",
     "mldoc": "1.5.1"
   },
   "bin": {
-    "logseq-ast-graph": "ast.js"
+    "logseq-graph-ast": "graph_ast.mjs"
   },
   "license": "MIT"
 }

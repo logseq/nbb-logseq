@@ -56,51 +56,55 @@ Notes about this script:
   ClojureScript. While these can be run in JS with 3rd party libraries, they are
   less complete and likely buggier versions of the ClojureScript equivalents.
 
-### ast.js
+### graph_ast.mjs
 
-[ast.js](ast.js) parses the given graph directory and returns a map of files
+[graph_ast.mjs](graph_ast.mjs) parses the given graph directory and returns a map of files
 and their ast trees. An ast tree is basically a data representation of a file
 that identifies almost every actionable piece of text Logseq recognizes e.g. a
-url, property, page reference, etc. Here's how to use this script:
+url, property, page reference, etc. Unlike the previous script, let's install and use it as a CLI:
 
 ```sh
-# First clone an example graph like the logseq docs
-$ git clone https://github.com/logseq/docs && cd docs
-
+$ yarn global add $PWD
 # Print help to understand what arguments are available
-$ node ast.js
+$ logseq-graph-ast -h
 Usage: $0 GRAPH-DIR [NODE-TYPE]
 
 Valid node-types are simple-query, advanced-query, url
 
+# Same as the above, though using the CLI
+# version allows us to call it from any directory
+$ node graph_ast.mjs -h
+Usage: $0 GRAPH-DIR [NODE-TYPE]
+...
+```
+
+Here's how to use this script:
+```sh
+# First clone an example graph like the logseq docs
+$ git clone https://github.com/logseq/docs && cd docs
+
 # Print all ast data in the graph. A lot of data is printed out
-$ node ast.js .
+$ logseq-graph-ast .
 Parsing 269 files...
-[
-  {
-    "file": "/Users/me/code/work/docs/journals/2021_07_19.md",
-    "ast": [
-      [
-        [
-          "Heading",
+[{:file "./journals/2021_07_19.md",
+  :ast
+  ([["Heading"
 ...
 
 # Print all urls in the graph
-$ node ast.js . url
+$ logseq-graph-ast . url
 Parsing 269 files...
-[
-  "https://asciidoctor.org/docs/user-manual/#admonition",
+["https://asciidoctor.org/docs/user-manual/#admonition",
 ...
 
 # Print all simple queries in the graph
-$ node ast.js . simple-query
+$ logseq-graph-ast . simple-query
 Parsing 269 files...
-[
-  "(namespace [[term]])",
+["(namespace [[term]])",
 ...
 
-# This script can also be invoked directly without calling ast.js
-$ yarn nbb-logseq ast.cljs
+# This script can also be invoked directly without calling graph_ast.mjs
+$ yarn nbb-logseq -m graph-ast/-main
 ...
 ```
 
@@ -109,5 +113,5 @@ Notes about this script:
   useful when there is enough ClojureScript that it'd help to have it in a separate file
   for development purposes e.g. syntax highlighting.
 * The `gp-cli/parse-graph` returns ast data, in addition to a database.
-* In ast.cljs, see `clojure.walk/postwalk` which makes it easy to walk the ast
+* In graph_ast.cljs, see `clojure.walk/postwalk` which makes it easy to walk the ast
   trees and find specific nodes easily.
