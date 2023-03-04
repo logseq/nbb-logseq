@@ -15,6 +15,8 @@ in to existing ones.
 
 ### Write rdf
 
+Note: For a maintained version of this script, see https://github.com/logseq/rdf-export.
+
 The [write_rdf.cljs](write_rdf.cljs) script converts a subset of a Logseq graph
 to an rdf file. For example:
 
