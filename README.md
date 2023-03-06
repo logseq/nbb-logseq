@@ -57,11 +57,12 @@ specified.
 
 ## Projects using nbb-logseq
 
-* https://github.com/logseq/graph-validator - github action and CLI
+* https://github.com/logseq/graph-validator - github action to validate graph
 * https://github.com/cldwalker/logseq-query - commandline tool
 * https://github.com/logseq/bb-tasks#logseqbb-tasksnbb - bb tasks that use nbb-logseq
 * https://github.com/dom8509/logseq-to-markdown - CLI to export graph to Hugo Markdown files
 * https://github.com/logseq/docs/tree/master/script - Scripts to query docs
+* https://github.com/logseq/rdf-export - github action to export graph to RDF
 * For more examples see the [examples directory](examples).
 
 ## CLIs
