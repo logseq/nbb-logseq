@@ -67,14 +67,20 @@ url, property, page reference, etc. Unlike the previous script, let's install an
 $ yarn global add $PWD
 # Print help to understand what arguments are available
 $ logseq-graph-ast -h
-Usage: $0 GRAPH-DIR [NODE-TYPE]
-
+Usage: $0 [GRAPH-DIR] [OPTIONS]
+Options:
+  -h, --help      Print help
+  -o, --out-file  File to save output
+  -n, --node-type Node type to filter asts
 Valid node-types are simple-query, advanced-query, url
 
-# Same as the above, though using the CLI
-# version allows us to call it from any directory
+# Same as the above, though using the CLI version allows us to call it from any directory
 $ node graph_ast.mjs -h
 Usage: $0 GRAPH-DIR [NODE-TYPE]
+...
+
+# Same as above by calling cljs file directly
+$ yarn nbb-logseq -m graph-ast/-main -h
 ...
 ```
 
@@ -83,28 +89,25 @@ Here's how to use this script:
 # First clone an example graph like the logseq docs
 $ git clone https://github.com/logseq/docs && cd docs
 
-# Print all ast data in the graph. A lot of data is printed out
-$ logseq-graph-ast .
+# Saves all ast data in the graph.
+$ logseq-graph-ast . -o asts.edn
 Parsing 269 files...
+$ cat asts.edn
 [{:file "./journals/2021_07_19.md",
   :ast
   ([["Heading"
 ...
 
 # Print all urls in the graph
-$ logseq-graph-ast . url
+$ logseq-graph-ast . -n url
 Parsing 269 files...
 ["https://asciidoctor.org/docs/user-manual/#admonition",
 ...
 
 # Print all simple queries in the graph
-$ logseq-graph-ast . simple-query
+$ logseq-graph-ast . -n simple-query
 Parsing 269 files...
 ["(namespace [[term]])",
-...
-
-# This script can also be invoked directly without calling graph_ast.mjs
-$ yarn nbb-logseq -m graph-ast/-main
 ...
 ```
 

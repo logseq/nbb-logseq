@@ -4,7 +4,9 @@
   (:require [clojure.pprint :as pprint]
             [clojure.string :as string]
             [clojure.walk :as walk]
-            [logseq.graph-parser.cli :as gp-cli]))
+            [logseq.graph-parser.cli :as gp-cli]
+            [babashka.cli :as cli]
+            ["fs" :as fs]))
 
 (defn- url-node
   [node]
@@ -51,22 +53,41 @@ it"
        (mapcat :ast)
        vec))
 
+(def spec
+  "CLI options"
+  {:help {:alias :h
+          :coerce :boolean
+          :desc "Print help"}
+   :out-file  {:alias :o
+               :coerce :string
+               :desc "File to save output"}
+   :node-type {:alias :n
+               :coerce :string
+               :desc "Node type to filter asts"
+               :validate (set (keys node-types))}})
+
 (defn -main
   [& args]
-  (if (contains? (set args) "-h")
-    (println "Usage: $0 [GRAPH-DIR] [NODE-TYPE]\n\nValid node-types are"
-             (string/join ", " (keys node-types)))
-    (let [graph-dir (or (first args) ".")
-          node-type (second args)
-          keep-node (when node-type
-                      (or (get node-types node-type)
-                          (throw (ex-info (str "Invalid node-type. Valid node-types are "
-                                               (string/join ", " (keys node-types)))
-                                          {}))))
-          {:keys [asts]} (gp-cli/parse-graph graph-dir {:verbose false})]
-      (pprint/pprint
-       (if node-type
-         (filter-ast asts keep-node)
-         asts)))))
+  (let [{:keys [out-file help node-type]}
+        (cli/parse-opts args {:spec spec
+                              :error-fn (fn [{:keys [msg type option] :as data}]
+                                          (if (= :org.babashka/cli type)
+                                            (println "Error:"
+                                                     (str msg
+                                                          (when (= :node-type option)
+                                                            (str ". Valid node-types are " (string/join ", " (keys node-types))))))
+                                            (throw (ex-info msg data)))
+                                          (js/process.exit 1))})]
+    (if help
+      (println (str "Usage: $0 [GRAPH-DIR] [OPTIONS]\nOptions:\n"
+                    (cli/format-opts {:spec spec})
+                    "\nValid node-types are " (string/join ", " (keys node-types))))
+      (let [graph-dir (or (first args) ".")
+            keep-node (get node-types node-type)
+            {:keys [asts]} (gp-cli/parse-graph graph-dir {:verbose false})
+            final-asts (if node-type (filter-ast asts keep-node) asts)]
+       (if out-file
+         (fs/writeFileSync out-file (with-out-str (pprint/pprint final-asts)))
+         (pprint/pprint final-asts))))))
 
 #js {:main -main}
