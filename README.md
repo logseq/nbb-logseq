@@ -78,6 +78,8 @@ Community CLIs with a `nbb.edn`:
 * [logseq-graph-validator](https://github.com/logseq/graph-validator#cli) - CLI to run validations on the current graph
 * [logseq-rdf-export](https://github.com/logseq/rdf-export#cli) - CLI to export graph as RDF
 * https://github.com/cldwalker/logseq-clis - Collection of CLIs to run on graphs
+* [nbb-logseq-test-runner](https://github.com/logseq-cldwalker/nbb-test-runner#cli) - CLI that runs
+  cljs.test tests for a nbb compatible project
 
 ### Install a CLI
 
