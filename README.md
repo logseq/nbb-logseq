@@ -80,6 +80,8 @@ Community CLIs with a `nbb.edn`:
 * https://github.com/cldwalker/logseq-clis - Collection of CLIs to run on graphs
 * [nbb-logseq-test-runner](https://github.com/logseq-cldwalker/nbb-test-runner#cli) - CLI that runs
   cljs.test tests for a nbb compatible project
+* [logseq-publish-spa](https://github.com/logseq/publish-spa#cli) - CLI that publishes a graph as a
+  single page app
 
 ### Install a CLI
 
