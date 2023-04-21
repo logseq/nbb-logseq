@@ -83,6 +83,10 @@ Community CLIs with a `nbb.edn`:
 * [logseq-publish-spa](https://github.com/logseq/publish-spa#cli) - CLI that publishes a graph as a
   single page app
 
+To install or build a CLI locally, install
+[babashka](https://github.com/babashka/babashka#installation) and
+[clojure](https://clojure.org/guides/install_clojure).
+
 ### Install a CLI
 
 From any script directory that has a `nbb.edn`, install CLIs on `$PATH` with
