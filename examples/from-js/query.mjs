@@ -1,7 +1,7 @@
 import { loadString } from '@logseq/nbb-logseq'
 import { exit } from 'process';
 
-// Expects to be called as `node query.js ...`
+// Expects to be called as `node query.mjs ...`
 const args = process.argv.slice(2);
 if (args.length < 2) {
   console.log("Usage: $0 GRAPH-DIR QUERY");

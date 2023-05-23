@@ -9,7 +9,17 @@
             [datascript.transit :as dt]
             [clojure.pprint :as pprint]
             [clojure.edn :as edn]
-            ["fs" :as fs]))
+            ["fs" :as fs]
+            ["child_process" :as child-process]))
+
+(defn- sh
+  "Run shell cmd synchronously and print to inherited streams by default. Aims
+    to be similar to babashka.tasks/shell
+TODO: Fail fast when process exits 1"
+  [cmd opts]
+  (child-process/spawnSync (first cmd)
+                           (clj->js (rest cmd))
+                           (clj->js (merge {:stdio "inherit"} opts))))
 
 (defn- clone-graphs
   [graph-urls]
@@ -17,7 +27,7 @@
          (let [graph-dir (str "graphs/" (re-find #"[^/]+$" graph-url))]
            (if (fs/existsSync graph-dir)
              (println "Graph" graph-url "is already cloned")
-             (gp-cli/sh ["git" "clone" graph-url graph-dir] {}))
+             (sh ["git" "clone" graph-url graph-dir] {}))
            graph-dir))
        graph-urls))
 

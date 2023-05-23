@@ -17,9 +17,9 @@ The following sections describe Node.js scripts that call Logseq's graph-parser
 in ClojureScript and then return control to Javascript to process the result.
 These scripts use a specific version of Logseq as specified in `nbb.edn`.
 
-### query.js
+### query.mjs
 
-[query.js](query.js) converts the given graph directory into a database and
+[query.mjs](query.mjs) converts the given graph directory into a database and
 then runs the given query on that database. This script is able to run any
 Datalog query the Logseq app can, but from the commandline. Here's how to use
 this script:
@@ -29,14 +29,14 @@ this script:
 $ git clone https://github.com/logseq/docs && cd docs
 
 # Print all the page names in the graph
-$ node query.js . '[:find ?n :where [?b :block/name ?n]]'
+$ node query.mjs . '[:find ?n :where [?b :block/name ?n]]'
 Parsing 269 files...
 [
   "setting___enable journals",
 ...
 
 # Print all the tasks' contents
-$ node query.js . '[:find (pull ?b [:block/content]) :where (task ?b #{"TODO"})]'
+$ node query.mjs . '[:find (pull ?b [:block/content]) :where (task ?b #{"TODO"})]'
 Parsing 269 files...
 [
   {
