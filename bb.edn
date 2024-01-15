@@ -1,13 +1,13 @@
 {:paths ["script"]
  :deps
  {nbb.build/nbb.build
-  {:git/url "https://github.com/logseq/nbb"
-   :git/sha "9c9a698cf1bc572c9210515f02e259dd70c6a833"
+  {:git/url "https://github.com/babashka/nbb"
+   :git/sha "48d0b6b3b922ac0411bc0cbb7f328881a7aab429"
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
   nbb/nbb
-  {:git/url "https://github.com/logseq/nbb"
-   :git/sha "9c9a698cf1bc572c9210515f02e259dd70c6a833"}
+  {:git/url "https://github.com/babashka/nbb"
+   :git/sha "48d0b6b3b922ac0411bc0cbb7f328881a7aab429"}
   #_{:local/root "../nbb"}
   org.babashka/sci
   {:mvn/version "0.8.41"}
