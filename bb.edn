@@ -6,8 +6,8 @@
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
   nbb/nbb
-  {:git/url "https://github.com/babashka/nbb"
-   :git/sha "2f0f645ae685f02a6c54974f444dfee2a16657eb"}
+  {:git/url "https://github.com/logseq/nbb"
+   :git/sha "4c59d11d74db75cc4d1430987659c8bdb95f3784"}
   #_{:local/root "../nbb"}
   org.babashka/sci
   {:mvn/version "0.8.41"}
