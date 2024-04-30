@@ -1,0 +1,2 @@
+{:deps
+ {org.flatland/ordered {:mvn/version "1.15.11"}}}
