@@ -25,7 +25,8 @@ Remaining fns are used by the community"
    'today (copy-var t/today core-ns)
    'minus (copy-var t/minus core-ns)
    'plus (copy-var t/plus core-ns)
-   'to-default-time-zone (copy-var t/to-default-time-zone core-ns)})
+   'to-default-time-zone (copy-var t/to-default-time-zone core-ns)
+   'local-date (copy-var t/local-date core-ns)})
 
 (def coerce-namespace
   "Only to-long is used by logseq.graph-parser"
