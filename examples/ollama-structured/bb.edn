@@ -1,0 +1,84 @@
+{:deps
+ {org.babashka/http-client {:mvn/version "0.3.11"}}
+ :tasks
+ {chat
+  {:doc "Structured chat with local ollama instance"
+   :requires ([babashka.http-client :as http]
+              [cheshire.core :as json]
+              [clojure.string :as str]
+              [clojure.pprint :as pprint])
+   :task
+   (let [prompt (str "Tell me about movie " (pr-str (first *command-line-args*)))
+         graph-properties
+         {:schema.property/actor
+          {:logseq.property/type :node :db/cardinality :db.cardinality/many}
+          :schema.property/director
+          {:logseq.property/type :node :db/cardinality :db.cardinality/many}
+          :schema.property/musicBy
+          {:logseq.property/type :node :db/cardinality :db.cardinality/many}
+          :schema.property/datePublished
+          {:logseq.property/type :date :db/cardinality :db.cardinality/one}
+          :schema.property/url
+          {:logseq.property/type :url :db/cardinality :db.cardinality/one}}
+         chat-properties
+         (merge {:name {:type :string}}
+                (->> graph-properties
+                     (map (fn [[k v]]
+                            (let [chat-property
+                                  (case (get-in graph-properties [k :logseq.property/type])
+                                    :node
+                                    {:type :object
+                                     :properties
+                                     {:name {:type :string}
+                                      :schema.property/url {:type :string}}
+                                     :required [:name :schema.property/url]}
+                                    :date
+                                    {:type :string :format :date}
+                                    {:type :string})]
+                              [k
+                               (if (= :db.cardinality/many (:db/cardinality v))
+                                 {:type :array :items chat-property}
+                                 chat-property)])))
+                     (into {})))
+         post-body
+         {:model "llama3.2"
+          :messages [{:role "user" :content prompt}]
+          :stream false
+          :format {:type :object
+                   :properties chat-properties
+                   :required (into [:name] (keys graph-properties))}}
+         resp (http/post "http://localhost:11434/api/chat"
+                         {:headers {"Accept" "application/json"}
+                          :body (json/generate-string post-body)})
+         body (json/parse-string (:body resp) true)
+         content (json/parse-string (get-in body [:message :content]) true)
+         obj-properties
+         (->> (dissoc content :name)
+              (map (fn [[k v]]
+                     [k
+                      (let [prop-value
+                            (fn [e]
+                              (case (get-in graph-properties [k :logseq.property/type])
+                                :node
+                                [:build/page (cond-> {:block/title (:name e)
+                                                      :build/tags [:schema.class/Person]}
+                                               (seq (dissoc e :name))
+                                               (assoc :build/properties (dissoc e :name)))]
+                                :date
+                                [:build/page {:build/journal (Integer/parseInt (str/replace v "-" ""))}]
+                                (str e)))]
+                        (if (vector? v)
+                          (set (map prop-value v))
+                          (prop-value v)))]))
+              (into {}))
+         graph-classes {:schema.class/Person {}
+                        :schema.class/Movie {}}
+         export-config
+         {:properties graph-properties
+          :classes graph-classes
+          :pages-and-blocks [{:page {:build/journal 20250221}
+                              :blocks [{:block/title (:name content)
+                                        :build/tags [:schema.class/Movie]
+                                        :build/properties obj-properties}]}]}]
+     (shell {:in (with-out-str (pprint/pprint export-config))} "pbcopy")
+     (pprint/pprint export-config))}}}
