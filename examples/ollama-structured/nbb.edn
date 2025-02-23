@@ -1,0 +1,6 @@
+{:deps
+ {logseq/db
+  {:git/url "https://github.com/logseq/logseq"
+   :git/sha "054c8c42d208e77e36ab79f4e7c7ce1a74beaab1"
+   :deps/root "deps/db"}
+  #_{:local/root "../logseq/deps/db"}}}

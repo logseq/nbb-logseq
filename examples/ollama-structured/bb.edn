@@ -2,7 +2,8 @@
  {org.babashka/http-client {:mvn/version "0.3.11"}}
  :tasks
  {chat
-  {:doc "Structured chat with local ollama instance"
+  ;; Hardcoded config
+  {:doc "Structured chat PoC with local ollama instance"
    :requires ([babashka.http-client :as http]
               [cheshire.core :as json]
               [clojure.string :as str]
