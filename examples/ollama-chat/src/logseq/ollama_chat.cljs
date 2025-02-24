@@ -23,10 +23,13 @@
     :schema.property/url {}}
    :schema.class/Book
    {:schema.property/author
-    {:build/tags [:schema.class/Person] :chat-properties [:schema.property/url :schema.property/birthDate]}
+    {:build/tags [:schema.class/Person] :chat-properties [:schema.property/url]}
     :schema.property/datePublished {}}
    :schema.class/Person
-   {:schema.property/birthPlace {}}
+   {:schema.property/birthDate {}
+    :schema.property/birthPlace {;; :chat-ident :birthCountry :build/tags [:schema.class/Country]
+                                 :chat-properties [:schema.property/additionalType]}
+    :schema.property/gender {}}
    :schema.class/MusicRecording
    {:schema.property/byArtist
     {:build/tags [:schema.class/MusicGroup] :chat-properties [:schema.property/url]}
@@ -63,7 +66,7 @@
          (->> (select-keys export-properties (keys (input-class user-config)))
               (map (fn [[k v]]
                      (let [chat-property (define-chat-property input-class export-properties k)]
-                       [k
+                       [(or (get-in user-config [input-class k :chat-ident]) k)
                         (if (= :db.cardinality/many (:db/cardinality v))
                           {:type :array :items chat-property}
                           chat-property)])))
@@ -81,27 +84,30 @@
 
 (defn- buildable-properties [properties input-class export-properties]
   (->> properties
-       (map (fn [[k v]]
-              [k
-               (let [prop-value
-                     (fn [e]
-                       (case (get-in export-properties [k :logseq.property/type])
-                         :node
-                         [:build/page (let [obj-tags (or (get-in user-config [input-class k :build/tags])
-                                                         (some-> (get-in export-properties [k :build/property-classes])
-                                                                 (subvec 0 1)))]
-                                        (cond-> {:block/title (:name e)}
-                                          (seq obj-tags)
-                                          (assoc :build/tags obj-tags)
-                                          (seq (dissoc e :name))
-                                          (assoc :build/properties
-                                                 (buildable-properties (dissoc e :name) input-class export-properties))))]
-                         :date
-                         [:build/page {:build/journal (parse-long (string/replace e "-" ""))}]
-                         (str e)))]
-                 (if (vector? v)
-                   (set (map prop-value v))
-                   (prop-value v)))]))
+       (map (fn [[chat-ident v]]
+              (let [prop-ident (or (some (fn [[k' v']] (when (= chat-ident (:chat-ident v')) k'))
+                                         (get user-config input-class))
+                                   chat-ident)]
+                [prop-ident
+                 (let [prop-value
+                       (fn [e]
+                         (case (get-in export-properties [prop-ident :logseq.property/type])
+                           :node
+                           [:build/page (let [obj-tags (or (get-in user-config [input-class prop-ident :build/tags])
+                                                           (some-> (get-in export-properties [prop-ident :build/property-classes])
+                                                                   (subvec 0 1)))]
+                                          (cond-> {:block/title (:name e)}
+                                            (seq obj-tags)
+                                            (assoc :build/tags obj-tags)
+                                            (seq (dissoc e :name))
+                                            (assoc :build/properties
+                                                   (buildable-properties (dissoc e :name) input-class export-properties))))]
+                           :date
+                           [:build/page {:build/journal (parse-long (string/replace e "-" ""))}]
+                           (str e)))]
+                   (if (vector? v)
+                     (set (map prop-value v))
+                     (prop-value v)))])))
        (into {:user.property/importedAt (common-util/time-ms)})))
 
 (defn- print-export-map
