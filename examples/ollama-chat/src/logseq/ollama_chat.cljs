@@ -25,6 +25,8 @@
    {:schema.property/author
     {:build/tags [:schema.class/Person] :chat-properties [:schema.property/url :schema.property/birthDate]}
     :schema.property/datePublished {}}
+   :schema.class/Person
+   {:schema.property/birthPlace {}}
    :schema.class/MusicRecording
    {:schema.property/byArtist
     {:build/tags [:schema.class/MusicGroup] :chat-properties [:schema.property/url]}
@@ -58,7 +60,7 @@
 
 (defn- ->chat-properties [input-class export-properties]
   (merge {:name {:type :string}}
-         (->> export-properties
+         (->> (select-keys export-properties (keys (input-class user-config)))
               (map (fn [[k v]]
                      (let [chat-property (define-chat-property input-class export-properties k)]
                        [k
@@ -89,11 +91,11 @@
                                                          (some-> (get-in export-properties [k :build/property-classes])
                                                                  (subvec 0 1)))]
                                         (cond-> {:block/title (:name e)}
-                                             (seq obj-tags)
-                                             (assoc :build/tags obj-tags)
-                                             (seq (dissoc e :name))
-                                             (assoc :build/properties
-                                                    (buildable-properties (dissoc e :name) input-class export-properties))))]
+                                          (seq obj-tags)
+                                          (assoc :build/tags obj-tags)
+                                          (seq (dissoc e :name))
+                                          (assoc :build/properties
+                                                 (buildable-properties (dissoc e :name) input-class export-properties))))]
                          :date
                          [:build/page {:build/journal (parse-long (string/replace e "-" ""))}]
                          (str e)))]
@@ -103,7 +105,7 @@
        (into {:user.property/importedAt (common-util/time-ms)})))
 
 (defn- print-export-map
-  [body input-class export-properties]
+  [body input-class export-properties {:keys [block-import]}]
   (let [content-json (.. body -message -content)
         content (-> (js/JSON.parse content-json)
                     (js->clj :keywordize-keys true))
@@ -114,21 +116,28 @@
                                                (mapcat :build/property-classes (vals export-properties))))
                                       (repeat {}))
                               {input-class {}})
-        today-int (date-time-util/date->int (new js/Date))
+        pages-and-blocks
+        (if block-import
+          [{:page {:build/journal (date-time-util/date->int (new js/Date))}
+            :blocks [{:block/title (:name content)
+                      :build/tags [input-class]
+                      :build/properties obj-properties}]}]
+          [{:page {:block/title (:name content)
+                   :build/tags [input-class]
+                   ;; Allows upsert of existing page
+                   :build/keep-uuid? true
+                   :build/properties obj-properties}}])
         export-map
         {:properties (merge export-properties
                             {:user.property/importedAt
                              {:logseq.property/type :datetime
                               :db/cardinality :db.cardinality/one}})
          :classes export-classes
-         :pages-and-blocks [{:page {:build/journal today-int}
-                             :blocks [{:block/title (:name content)
-                                       :build/tags [input-class]
-                                       :build/properties obj-properties}]}]}]
+         :pages-and-blocks pages-and-blocks}]
     (pprint/pprint export-map)))
 
 (defn- structured-chat
-  [input-class export-properties args]
+  [input-class export-properties args options]
   (let [post-body (->post-body input-class export-properties args)
         post-body' (clj->js post-body :keyword-fn #(subs (str %) 1))]
     (-> (p/let [resp (js/fetch "http://localhost:11434/api/chat"
@@ -137,7 +146,7 @@
                                     :body (js/JSON.stringify post-body')})
                 body (.json resp)]
           (if (= 200 (.-status resp))
-            (print-export-map body input-class export-properties)
+            (print-export-map body input-class export-properties options)
             (do
               (println "Error: Chat endpoint returned" (.-status resp) "with message" (pr-str (.-error body)))
               (js/process.exit 1))))
@@ -148,6 +157,8 @@
   "Options spec"
   {:help {:alias :h
           :desc "Print help"}
+   :block-import {:alias :b
+                  :desc "Import object as block in today's journal"}
    :verbose {:alias :v
              :desc "Print more info"}})
 
@@ -186,6 +197,6 @@
                                                       (mapv :db/ident (:logseq.property/classes %))))))
                                (into {}))]
     (when (:verbose options) (println "DB contains" (count (d/datoms @conn :eavt)) "datoms"))
-    (structured-chat input-class export-properties args')))
+    (structured-chat input-class export-properties args' options)))
 
 #js {:main -main}
