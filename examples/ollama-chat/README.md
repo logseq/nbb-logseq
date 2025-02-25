@@ -1,6 +1,6 @@
 ## Description
 
-This example demonstrates a Logseq DB graph extracting data from [an Ollama LLM](https://ollama.com/) that can then be used in Logseq. With the DB version, a Logseq graph defines an ontology through its tags and properties. While the [schema.org ontology](https://schema.org) is used, the example script can be configured to use any Logseq graph's ontology.
+This example demonstrates a Logseq DB graph extracting data from [an Ollama LLM](https://ollama.com/) that can then be used in Logseq. With the DB version, a Logseq graph defines an ontology through its tags and properties. While the [schema.org ontology](https://schema.org) is used, the example script can be configured to use any Logseq graph's ontology. To see a demo of this example, see [this video](https://www.loom.com/share/bd98db65474f4e828bd4db65d556159c).
 
 ## Setup
 

@@ -35,12 +35,15 @@
      {:build/tags [:schema.class/Person] :chat/properties [:schema.property/url]}}}
 
    :schema.class/Person
-   {:chat/class-properties [:schema.property/birthDate :schema.property/birthPlace :schema.property/gender]
+   {:chat/class-properties [:schema.property/birthDate :schema.property/birthPlace :schema.property/hasOccupation]
     ;; TODO: Get back a more specific place e.g. Country
     #_:properties
     #_{:schema.property/birthPlace
        {:chat-ident :birthCountry :build/tags [:schema.class/Country]
         :chat/properties [:schema.property/additionalType]}}}
+
+   :schema.class/Organization
+   {:chat/class-properties [:schema.property/url :schema.property/foundingLocation :schema.property/alumni]}
 
    :schema.class/MusicRecording
    {:chat/class-properties [:schema.property/byArtist :schema.property/inAlbum :schema.property/datePublished
