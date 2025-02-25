@@ -12,30 +12,44 @@
             ["os" :as os]))
 
 (def user-config
+  "Configure what to query per class/tag. Each class has a map consisting of the following keys:
+   * :chat/class-properties - a vec of properties to fetch for this class
+   * :properties - Configures properties. Keys are the property kw idents and the values are a map with the keys:
+     * :build/tags - For :node properties, tags to set for the property value(s)
+     * :chat/properties - For :node properties, properties to fetch for the property value(s)"
   {:schema.class/Movie
-   {:schema.property/actor
-    {:chat-properties [:schema.property/url]}
-    :schema.property/director
-    {:chat-properties [:schema.property/url]}
-    :schema.property/musicBy
-    {:build/tags [:schema.class/MusicGroup] :chat-properties [:schema.property/url]}
-    :schema.property/datePublished {}
-    :schema.property/url {}}
+   {:chat/class-properties [:schema.property/actor :schema.property/director :schema.property/musicBy
+                            :schema.property/datePublished :schema.property/url]
+    :properties
+    {:schema.property/actor
+     {:chat/properties [:schema.property/url]}
+     :schema.property/director
+     {:chat/properties [:schema.property/url]}
+     :schema.property/musicBy
+     {:build/tags [:schema.class/MusicGroup] :chat/properties [:schema.property/url]}}}
+
    :schema.class/Book
-   {:schema.property/author
-    {:build/tags [:schema.class/Person] :chat-properties [:schema.property/url]}
-    :schema.property/datePublished {}}
+   {:chat/class-properties [:schema.property/author :schema.property/datePublished :schema.property/url]
+    :properties
+    {:schema.property/author
+     {:build/tags [:schema.class/Person] :chat/properties [:schema.property/url]}}}
+
    :schema.class/Person
-   {:schema.property/birthDate {}
-    :schema.property/birthPlace {;; :chat-ident :birthCountry :build/tags [:schema.class/Country]
-                                 :chat-properties [:schema.property/additionalType]}
-    :schema.property/gender {}}
+   {:chat/class-properties [:schema.property/birthDate :schema.property/birthPlace :schema.property/gender]
+    ;; TODO: Get back a more specific place e.g. Country
+    #_:properties
+    #_{:schema.property/birthPlace
+       {:chat-ident :birthCountry :build/tags [:schema.class/Country]
+        :chat/properties [:schema.property/additionalType]}}}
+
    :schema.class/MusicRecording
-   {:schema.property/byArtist
-    {:build/tags [:schema.class/MusicGroup] :chat-properties [:schema.property/url]}
-    :schema.property/inAlbum
-    {:chat-properties [:schema.property/url]}
-    :schema.property/datePublished {}}})
+   {:chat/class-properties [:schema.property/byArtist :schema.property/inAlbum :schema.property/datePublished
+                            :schema.property/url]
+    :properties
+    {:schema.property/byArtist
+     {:build/tags [:schema.class/MusicGroup] :chat/properties [:schema.property/url]}
+     :schema.property/inAlbum
+     {:chat/properties [:schema.property/url]}}}})
 
 (defn- get-dir-and-db-name
   "Gets dir and db name for use with open-db!"
@@ -46,10 +60,11 @@
       ((juxt node-path/dirname node-path/basename) graph-dir'))
     [(node-path/join (os/homedir) "logseq" "graphs") graph-dir]))
 
+;; TODO: Add support for :datetime properties
 (defn define-chat-property [input-class export-properties prop-ident]
   (case (get-in export-properties [prop-ident :logseq.property/type])
     :node
-    (let [obj-properties (get-in user-config [input-class prop-ident :chat-properties])]
+    (let [obj-properties (get-in user-config [input-class :properties prop-ident :chat/properties])]
       {:type :object
        :properties
        (merge {:name {:type :string}}
@@ -59,14 +74,19 @@
        :required (vec (concat [:name] obj-properties))})
     :date
     {:type :string :format :date}
+    :number
+    {:type :integer}
+    :checkbox
+    {:type :boolean}
+    ;; :default and :url
     {:type :string}))
 
 (defn- ->chat-properties [input-class export-properties]
   (merge {:name {:type :string}}
-         (->> (select-keys export-properties (keys (input-class user-config)))
+         (->> (select-keys export-properties (:chat/class-properties (input-class user-config)))
               (map (fn [[k v]]
                      (let [chat-property (define-chat-property input-class export-properties k)]
-                       [(or (get-in user-config [input-class k :chat-ident]) k)
+                       [(or (get-in user-config [input-class :properties k :chat-ident]) k)
                         (if (= :db.cardinality/many (:db/cardinality v))
                           {:type :array :items chat-property}
                           chat-property)])))
@@ -86,14 +106,14 @@
   (->> properties
        (map (fn [[chat-ident v]]
               (let [prop-ident (or (some (fn [[k' v']] (when (= chat-ident (:chat-ident v')) k'))
-                                         (get user-config input-class))
+                                         (:properties (get user-config input-class)))
                                    chat-ident)]
                 [prop-ident
                  (let [prop-value
                        (fn [e]
                          (case (get-in export-properties [prop-ident :logseq.property/type])
                            :node
-                           [:build/page (let [obj-tags (or (get-in user-config [input-class prop-ident :build/tags])
+                           [:build/page (let [obj-tags (or (get-in user-config [input-class :properties prop-ident :build/tags])
                                                            (some-> (get-in export-properties [prop-ident :build/property-classes])
                                                                    (subvec 0 1)))]
                                           (cond-> {:block/title (:name e)}
@@ -104,6 +124,9 @@
                                                    (buildable-properties (dissoc e :name) input-class export-properties))))]
                            :date
                            [:build/page {:build/journal (parse-long (string/replace e "-" ""))}]
+                           (:number :checkbox)
+                           e
+                           (:default :url)
                            (str e)))]
                    (if (vector? v)
                      (set (map prop-value v))
@@ -117,7 +140,7 @@
                     (js->clj :keywordize-keys true))
         obj-properties (buildable-properties (dissoc content :name) input-class export-properties)
         export-classes (merge (zipmap (distinct
-                                       (concat (mapcat :build/tags (vals (get user-config input-class)))
+                                       (concat (mapcat :build/tags (vals (:properties (get user-config input-class))))
                                                ;; We may not use all of these but easier than walking build/page's
                                                (mapcat :build/property-classes (vals export-properties))))
                                       (repeat {}))
@@ -146,13 +169,20 @@
   [input-class export-properties args options]
   (let [post-body (->post-body input-class export-properties args)
         post-body' (clj->js post-body :keyword-fn #(subs (str %) 1))]
+    ;; TODO: Try javascript approach for possibly better results
+    ;; Uses chat endpoint as described in https://ollama.com/blog/structured-outputs
     (-> (p/let [resp (js/fetch "http://localhost:11434/api/chat"
                                #js {:method "POST"
                                     :headers #js {"Accept" "application/json"}
                                     :body (js/JSON.stringify post-body')})
                 body (.json resp)]
           (if (= 200 (.-status resp))
-            (print-export-map body input-class export-properties options)
+            (if (:raw options)
+              (pprint/pprint (update-in (js->clj body :keywordize-keys true)
+                                        [:message :content]
+                                        #(-> (js/JSON.parse %)
+                                             (js->clj :keywordize-keys true))))
+              (print-export-map body input-class export-properties options))
             (do
               (println "Error: Chat endpoint returned" (.-status resp) "with message" (pr-str (.-error body)))
               (js/process.exit 1))))
@@ -165,6 +195,8 @@
           :desc "Print help"}
    :block-import {:alias :b
                   :desc "Import object as block in today's journal"}
+   :raw {:alias :r
+         :desc "Print raw json chat response instead of Logseq EDN"}
    :verbose {:alias :v
              :desc "Print more info"}})
 
@@ -176,7 +208,7 @@
   (let [[graph-dir & args'] args
         options (cli/parse-opts args' {:spec spec})
         _ (when (or (nil? graph-dir) (:help options))
-            (println (str "Usage: $0 GRAPH-NAME [& ARGS] [OPTIONS]\nOptions:\n"
+            (println (str "Usage: $0 GRAPH-NAME TAG [& ARGS] [OPTIONS]\nOptions:\n"
                           (cli/format-opts {:spec spec})))
             (js/process.exit 1))
         [dir db-name] (get-dir-and-db-name graph-dir)
@@ -191,8 +223,8 @@
              first
              :db/ident)
             (error (str "No class found for" (pr-str (first args')))))
-        export-properties (->> (keys (input-class user-config))
-                               (concat (mapcat :chat-properties (vals (get user-config input-class))))
+        export-properties (->> (:chat/class-properties (input-class user-config))
+                               (concat (mapcat :chat/properties (vals (:properties (get user-config input-class)))))
                                distinct
                                (map #(or (d/entity @conn %)
                                          (error (str "No property exists for " (pr-str %)))))
