@@ -86,7 +86,7 @@
                   (get prop->malli-type prop-type))
         _ (assert schema* (str "Property type " (pr-str prop-type) " must have a schema type"))
         schema (if (= :db.cardinality/many (get-in export-properties [prop-ident :db/cardinality]))
-                 [:sequential schema*]
+                 [:sequential {:min 1} schema*]
                  schema*)
         props-and-schema (cond-> []
                            ;; Add json-schemable :date via malli property rather fun install fun of malli.experimental.time
