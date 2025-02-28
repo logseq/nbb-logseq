@@ -7,6 +7,8 @@
             [logseq.common.util.date-time :as date-time-util]
             #_:clj-kondo/ignore
             [logseq.db.sqlite.cli :as sqlite-cli]
+            [logseq.db.sqlite.export :as sqlite-export]
+            [malli.json-schema :as json-schema]
             [promesa.core :as p]
             ["path" :as node-path]
             ["os" :as os]))
@@ -22,14 +24,15 @@
                             :schema.property/datePublished :schema.property/url]
     :properties
     {:schema.property/actor
-     {:chat/properties [:schema.property/url]}
+     {:chat/properties [:schema.property/url #_ #_:schema.property/birthDate :schema.property/hasOccupation]}
      :schema.property/director
      {:chat/properties [:schema.property/url]}
      :schema.property/musicBy
      {:build/tags [:schema.class/MusicGroup] :chat/properties [:schema.property/url]}}}
 
    :schema.class/Book
-   {:chat/class-properties [:schema.property/author :schema.property/datePublished :schema.property/url]
+   {:chat/class-properties [:schema.property/author :schema.property/datePublished :schema.property/url
+                            #_ #_:schema.property/abridged :schema.property/numberOfPages]
     :properties
     {:schema.property/author
      {:build/tags [:schema.class/Person] :chat/properties [:schema.property/url]}}}
@@ -63,47 +66,56 @@
       ((juxt node-path/dirname node-path/basename) graph-dir'))
     [(node-path/join (os/homedir) "logseq" "graphs") graph-dir]))
 
-;; TODO: Add support for :datetime properties
-(defn define-chat-property [input-class export-properties prop-ident]
-  (case (get-in export-properties [prop-ident :logseq.property/type])
-    :node
-    (let [obj-properties (get-in user-config [input-class :properties prop-ident :chat/properties])]
-      {:type :object
-       :properties
-       (merge {:name {:type :string}}
-              (->> obj-properties
-                   (map #(vector % (define-chat-property input-class export-properties %)))
-                   (into {})))
-       :required (vec (concat [:name] obj-properties))})
-    :date
-    {:type :string :format :date}
-    :number
-    {:type :integer}
-    :checkbox
-    {:type :boolean}
-    ;; :default and :url
-    {:type :string}))
+(defn- define-chat-schema
+  "Returns a vec of optional malli properties and required schema for a given property ident"
+  [input-class export-properties prop-ident]
+  (let [prop->malli-type {:number :int
+                          :checkbox :boolean
+                          ;; doesn't matter since we're overridding it
+                          :date :any
+                          ;; TODO: Add support for :datetime
+                          :url :string
+                          :default :string}
+        prop-type (get-in export-properties [prop-ident :logseq.property/type])
+        schema* (if (= :node prop-type)
+                  (let [obj-properties (get-in user-config [input-class :properties prop-ident :chat/properties])]
+                    (into
+                     [:map [:name :string]]
+                     (map #(apply vector % (define-chat-schema input-class export-properties %))
+                          obj-properties)))
+                  (get prop->malli-type prop-type))
+        _ (assert schema* (str "Property type " (pr-str prop-type) " must have a schema type"))
+        schema (if (= :db.cardinality/many (get-in export-properties [prop-ident :db/cardinality]))
+                 [:sequential schema*]
+                 schema*)
+        props-and-schema (cond-> []
+                           ;; Add json-schemable :date via malli property rather fun install fun of malli.experimental.time
+                           (= :date prop-type)
+                           (conj {:json-schema {:type "string" :format "date"}})
+                           true
+                           (conj schema))]
+    props-and-schema))
 
-(defn- ->chat-properties [input-class export-properties]
-  (merge {:name {:type :string}}
-         (->> (select-keys export-properties (:chat/class-properties (input-class user-config)))
-              (map (fn [[k v]]
-                     (let [chat-property (define-chat-property input-class export-properties k)]
-                       [(or (get-in user-config [input-class :properties k :chat-ident]) k)
-                        (if (= :db.cardinality/many (:db/cardinality v))
-                          {:type :array :items chat-property}
-                          chat-property)])))
-              (into {}))))
+(defn- ->chat-properties-schema [input-class export-properties]
+  (into
+   [:map [:name :string]]
+   (map
+    (fn [k]
+      (apply vector
+             (or (get-in user-config [input-class :properties k :chat-ident]) k)
+             (define-chat-schema input-class export-properties k)))
+    (:chat/class-properties (input-class user-config)))))
+
+(defn- generate-json-schema-format [input-class export-properties]
+  ;; (pprint/pprint (->chat-properties-schema input-class export-properties))
+  (json-schema/transform (->chat-properties-schema input-class export-properties)))
 
 (defn- ->post-body [input-class export-properties args]
-  (let [prompt (str "Tell me about " (first args) " " (pr-str (string/join " " (rest args))))
-        chat-properties (->chat-properties input-class export-properties)]
+  (let [prompt (str "Tell me about " (first args) " " (pr-str (string/join " " (rest args))))]
     {:model "llama3.2"
      :messages [{:role "user" :content prompt}]
      :stream false
-     :format {:type :object
-              :properties chat-properties
-              :required (into [:name] (keys export-properties))}}))
+     :format (generate-json-schema-format input-class export-properties)}))
 
 (defn- buildable-properties [properties input-class export-properties]
   (->> properties
@@ -166,6 +178,7 @@
                               :db/cardinality :db.cardinality/one}})
          :classes export-classes
          :pages-and-blocks pages-and-blocks}]
+    (#'sqlite-export/ensure-export-is-valid export-map)
     (pprint/pprint export-map)))
 
 (defn- structured-chat
@@ -200,6 +213,8 @@
                   :desc "Import object as block in today's journal"}
    :raw {:alias :r
          :desc "Print raw json chat response instead of Logseq EDN"}
+   :json-schema-inspect {:alias :j
+                         :desc "Print json schema to submit and don't submit to chat"}
    :verbose {:alias :v
              :desc "Print more info"}})
 
@@ -238,6 +253,8 @@
                                                       (mapv :db/ident (:logseq.property/classes %))))))
                                (into {}))]
     (when (:verbose options) (println "DB contains" (count (d/datoms @conn :eavt)) "datoms"))
-    (structured-chat input-class export-properties args' options)))
+    (if (:json-schema-inspect options)
+      (pprint/pprint (generate-json-schema-format input-class export-properties))
+      (structured-chat input-class export-properties args' options))))
 
 #js {:main -main}
