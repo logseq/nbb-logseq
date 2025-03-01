@@ -68,20 +68,22 @@
 
 (defn- define-chat-schema
   "Returns a vec of optional malli properties and required schema for a given property ident"
-  [input-class export-properties prop-ident]
+  [{:keys [input-class input-global-properties] :as input-map} export-properties prop-ident]
   (let [prop->malli-type {:number :int
                           :checkbox :boolean
                           ;; doesn't matter since we're overridding it
                           :date :any
                           ;; TODO: Add support for :datetime
-                          :url :string
+                          :url uri?
                           :default :string}
         prop-type (get-in export-properties [prop-ident :logseq.property/type])
         schema* (if (= :node prop-type)
-                  (let [obj-properties (get-in user-config [input-class :properties prop-ident :chat/properties])]
+                  (let [obj-properties (->> (get-in user-config [input-class :properties prop-ident :chat/properties])
+                                            (concat input-global-properties)
+                                            distinct)]
                     (into
                      [:map [:name :string]]
-                     (map #(apply vector % (define-chat-schema input-class export-properties %))
+                     (map #(apply vector % (define-chat-schema input-map export-properties %))
                           obj-properties)))
                   (get prop->malli-type prop-type))
         _ (assert schema* (str "Property type " (pr-str prop-type) " must have a schema type"))
@@ -96,26 +98,29 @@
                            (conj schema))]
     props-and-schema))
 
-(defn- ->chat-properties-schema [input-class export-properties]
+(defn- ->chat-properties-schema [{:keys [input-class input-properties input-global-properties] :as input-map} export-properties]
   (into
    [:map [:name :string]]
    (map
     (fn [k]
       (apply vector
              (or (get-in user-config [input-class :properties k :chat-ident]) k)
-             (define-chat-schema input-class export-properties k)))
-    (:chat/class-properties (input-class user-config)))))
+             (define-chat-schema input-map export-properties k)))
+   (distinct
+    (concat (:chat/class-properties (input-class user-config))
+            input-properties
+            input-global-properties)))))
 
-(defn- generate-json-schema-format [input-class export-properties]
-  ;; (pprint/pprint (->chat-properties-schema input-class export-properties))
-  (json-schema/transform (->chat-properties-schema input-class export-properties)))
+(defn- generate-json-schema-format [input-map export-properties]
+  ;; (pprint/pprint (->chat-properties-schema input-map export-properties))
+  (json-schema/transform (->chat-properties-schema input-map export-properties)))
 
-(defn- ->post-body [input-class export-properties args]
+(defn- ->post-body [input-map export-properties args]
   (let [prompt (str "Tell me about " (first args) " " (pr-str (string/join " " (rest args))))]
     {:model "llama3.2"
      :messages [{:role "user" :content prompt}]
      :stream false
-     :format (generate-json-schema-format input-class export-properties)}))
+     :format (generate-json-schema-format input-map export-properties)}))
 
 (defn- buildable-properties [properties input-class export-properties]
   (->> properties
@@ -182,8 +187,8 @@
     (pprint/pprint export-map)))
 
 (defn- structured-chat
-  [input-class export-properties args options]
-  (let [post-body (->post-body input-class export-properties args)
+  [{:keys [input-class] :as input-map} export-properties args options]
+  (let [post-body (->post-body input-map export-properties args)
         post-body' (clj->js post-body :keyword-fn #(subs (str %) 1))]
     ;; TODO: Try javascript approach for possibly better results
     ;; Uses chat endpoint as described in https://ollama.com/blog/structured-outputs
@@ -215,6 +220,12 @@
          :desc "Print raw json chat response instead of Logseq EDN"}
    :json-schema-inspect {:alias :j
                          :desc "Print json schema to submit and don't submit to chat"}
+   :properties {:alias :p
+                :desc "Properties to fetch for top-level object"
+                :coerce []}
+   :global-properties {:alias :P
+                       :desc "Global properties to fetch for all objects"
+                       :coerce []}
    :verbose {:alias :v
              :desc "Print more info"}})
 
@@ -224,7 +235,7 @@
 
 (defn -main [& args]
   (let [[graph-dir & args'] args
-        options (cli/parse-opts args' {:spec spec})
+        {options :opts args'' :args} (cli/parse-args args' {:spec spec})
         _ (when (or (nil? graph-dir) (:help options))
             (println (str "Usage: $0 GRAPH-NAME TAG [& ARGS] [OPTIONS]\nOptions:\n"
                           (cli/format-opts {:spec spec})))
@@ -237,12 +248,17 @@
                     :in $ ?name
                     :where [?b :block/tags :logseq.class/Tag] [?b :block/name ?name]]
                   @conn
-                  (string/lower-case (first args')))
+                  (string/lower-case (first args'')))
              first
              :db/ident)
-            (error (str "No class found for" (pr-str (first args')))))
+            (error (str "No class found for" (pr-str (first args'')))))
+        input-map {:input-class input-class
+                   :input-properties (mapv #(keyword "schema.property" %) (:properties options))
+                   :input-global-properties (mapv #(keyword "schema.property" %) (:global-properties options))}
         export-properties (->> (:chat/class-properties (input-class user-config))
                                (concat (mapcat :chat/properties (vals (:properties (get user-config input-class)))))
+                               (concat (:input-properties input-map))
+                               (concat (:input-global-properties input-map))
                                distinct
                                (map #(or (d/entity @conn %)
                                          (error (str "No property exists for " (pr-str %)))))
@@ -254,7 +270,7 @@
                                (into {}))]
     (when (:verbose options) (println "DB contains" (count (d/datoms @conn :eavt)) "datoms"))
     (if (:json-schema-inspect options)
-      (pprint/pprint (generate-json-schema-format input-class export-properties))
-      (structured-chat input-class export-properties args' options))))
+      (pprint/pprint (generate-json-schema-format input-map export-properties))
+      (structured-chat input-map export-properties args'' options))))
 
 #js {:main -main}
