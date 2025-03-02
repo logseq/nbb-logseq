@@ -10,6 +10,7 @@
             [logseq.db.sqlite.export :as sqlite-export]
             [malli.json-schema :as json-schema]
             [promesa.core :as p]
+            ["child_process" :as child-process]
             ["path" :as node-path]
             ["os" :as os]
             [logseq.db :as ldb]))
@@ -54,6 +55,17 @@
     {:schema.property/byArtist
      {:build/tags [:schema.class/MusicGroup]}}}})
 
+(defn copy-to-clipboard [text]
+  (let [proc (child-process/exec "pbcopy")]
+    (.write (.-stdin proc) text)
+    (.end (.-stdin proc))))
+
+(defn- command-exists? [command]
+  (try
+    (child-process/execSync (str "which " command) #js {:stdio "ignore"})
+    true
+    (catch :default _ false)))
+
 (defn- get-dir-and-db-name
   "Gets dir and db name for use with open-db!"
   [graph-dir]
@@ -96,7 +108,7 @@
     props-and-schema))
 
 (defn- ->query-schema [{:keys [input-class input-properties input-global-properties] :as input-map}
-                                 export-properties {:keys [many-objects]}]
+                       export-properties {:keys [many-objects]}]
   (let [schema
         (into
          [:map [:name :string]]
@@ -198,7 +210,9 @@
          :classes export-classes
          :pages-and-blocks pages-and-blocks}]
     (#'sqlite-export/ensure-export-is-valid export-map)
-    (pprint/pprint export-map)))
+    (pprint/pprint export-map)
+    (when (command-exists? "pbcopy")
+      (copy-to-clipboard (with-out-str (pprint/pprint export-map))))))
 
 (defn- structured-chat
   [{:keys [input-class] :as input-map} export-properties args options]
