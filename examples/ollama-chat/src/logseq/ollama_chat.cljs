@@ -297,11 +297,15 @@
              (d/entity @conn))
             (error (str "No class found for" (pr-str (first args'')))))
         input-class (:db/ident input-class-ent)
+        random-properties (when (:random-properties options)
+                            (take (:random-properties options)
+                                  (shuffle (get-class-properties input-class-ent))))
+        _ (when (seq random-properties)
+            (println "To recreate these random properties: -p"
+                     (string/join " " (map name random-properties))))
         input-map {:input-class input-class
                    :input-properties (into (mapv translate-input-property (:properties options))
-                                           (when (:random-properties options)
-                                             (take (:random-properties options)
-                                                   (shuffle (get-class-properties input-class-ent)))))
+                                           random-properties)
                    :input-global-properties
                    (mapv translate-input-property
                          ;; Use -P to clear default
