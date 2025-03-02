@@ -25,18 +25,16 @@
                             :schema.property/datePublished :schema.property/url]
     :properties
     {:schema.property/actor
-     {:chat/properties [:schema.property/url #_#_:schema.property/birthDate :schema.property/hasOccupation]}
-     :schema.property/director
-     {:chat/properties [:schema.property/url]}
+     {:chat/properties [:schema.property/birthDate #_:schema.property/hasOccupation]}
      :schema.property/musicBy
-     {:build/tags [:schema.class/MusicGroup] :chat/properties [:schema.property/url]}}}
+     {:build/tags [:schema.class/MusicGroup]}}}
 
    :schema.class/Book
    {:chat/class-properties [:schema.property/author :schema.property/datePublished :schema.property/url
                             #_#_:schema.property/abridged :schema.property/numberOfPages]
     :properties
     {:schema.property/author
-     {:build/tags [:schema.class/Person] :chat/properties [:schema.property/url]}}}
+     {:build/tags [:schema.class/Person]}}}
 
    :schema.class/Person
    {:chat/class-properties [:schema.property/birthDate :schema.property/birthPlace :schema.property/hasOccupation]
@@ -54,9 +52,7 @@
                             :schema.property/url]
     :properties
     {:schema.property/byArtist
-     {:build/tags [:schema.class/MusicGroup] :chat/properties [:schema.property/url]}
-     :schema.property/inAlbum
-     {:chat/properties [:schema.property/url]}}}})
+     {:build/tags [:schema.class/MusicGroup]}}}})
 
 (defn- get-dir-and-db-name
   "Gets dir and db name for use with open-db!"
@@ -226,7 +222,8 @@
                 :coerce []}
    :global-properties {:alias :P
                        :desc "Global properties to fetch for all objects"
-                       :coerce []}
+                       :coerce []
+                       :default ["url"]}
    :random-properties {:alias :R
                        :desc "Random number of properties to fetch for top-level object"
                        :coerce :long}
@@ -274,7 +271,10 @@
                                            (when (:random-properties options)
                                              (take (:random-properties options)
                                                    (shuffle (get-class-properties input-class-ent)))))
-                   :input-global-properties (mapv translate-input-property (:global-properties options))}
+                   :input-global-properties
+                   (mapv translate-input-property
+                         ;; Use -P to clear default
+                         (if (= (:global-properties options) [true]) [] (:global-properties options)))}
         export-properties (->> (:chat/class-properties (input-class user-config))
                                (concat (mapcat :chat/properties (vals (:properties (get user-config input-class)))))
                                (concat (:input-properties input-map))
