@@ -63,7 +63,7 @@
       ((juxt node-path/dirname node-path/basename) graph-dir'))
     [(node-path/join (os/homedir) "logseq" "graphs") graph-dir]))
 
-(defn- define-chat-schema
+(defn- ->property-value-schema
   "Returns a vec of optional malli properties and required schema for a given property ident"
   [{:keys [input-class input-global-properties] :as input-map} export-properties prop-ident]
   (let [prop->malli-type {:number :int
@@ -80,7 +80,7 @@
                                             distinct)]
                     (into
                      [:map [:name :string]]
-                     (map #(apply vector % (define-chat-schema input-map export-properties %))
+                     (map #(apply vector % (->property-value-schema input-map export-properties %))
                           obj-properties)))
                   (get prop->malli-type prop-type))
         _ (assert schema* (str "Property type " (pr-str prop-type) " must have a schema type"))
@@ -95,29 +95,39 @@
                            (conj schema))]
     props-and-schema))
 
-(defn- ->chat-properties-schema [{:keys [input-class input-properties input-global-properties] :as input-map} export-properties]
-  (into
-   [:map [:name :string]]
-   (map
-    (fn [k]
-      (apply vector
-             (or (get-in user-config [input-class :properties k :chat-ident]) k)
-             (define-chat-schema input-map export-properties k)))
-    (distinct
-     (concat (:chat/class-properties (input-class user-config))
-             input-properties
-             input-global-properties)))))
+(defn- ->query-schema [{:keys [input-class input-properties input-global-properties] :as input-map}
+                                 export-properties {:keys [many-objects]}]
+  (let [schema
+        (into
+         [:map [:name :string]]
+         (map
+          (fn [k]
+            (apply vector
+                   (or (get-in user-config [input-class :properties k :chat-ident]) k)
+                   (->property-value-schema input-map export-properties k)))
+          (distinct
+           (concat (:chat/class-properties (input-class user-config))
+                   input-properties
+                   input-global-properties))))]
+    (if many-objects
+      [:sequential {:min 1} schema]
+      schema)))
 
-(defn- generate-json-schema-format [input-map export-properties]
-  ;; (pprint/pprint (->chat-properties-schema input-map export-properties))
-  (json-schema/transform (->chat-properties-schema input-map export-properties)))
+(defn- generate-json-schema-format [input-map export-properties options]
+  ;; (pprint/pprint (->query-schema input-map export-properties options))
+  (json-schema/transform (->query-schema input-map export-properties options)))
 
-(defn- ->post-body [input-map export-properties args]
-  (let [prompt (str "Tell me about " (first args) " " (pr-str (string/join " " (rest args))))]
+(defn- ->post-body [input-map export-properties args options]
+  (let [prompt (if (:many-objects options)
+                 (str "Tell me about " (first args) "(s) "
+                      (->> (string/split (string/join " " (rest args)) #"\s*,\s*")
+                           (map #(pr-str %))
+                           (string/join ", ")))
+                 (str "Tell me about " (first args) " " (pr-str (string/join " " (rest args)))))]
     {:model "llama3.2"
      :messages [{:role "user" :content prompt}]
      :stream false
-     :format (generate-json-schema-format input-map export-properties)}))
+     :format (generate-json-schema-format input-map export-properties options)}))
 
 (defn- buildable-properties [properties input-class export-properties]
   (->> properties
@@ -151,11 +161,13 @@
        (into {:user.property/importedAt (common-util/time-ms)})))
 
 (defn- print-export-map
-  [body input-class export-properties {:keys [block-import]}]
+  [body input-class export-properties {:keys [block-import many-objects]}]
   (let [content-json (.. body -message -content)
         content (-> (js/JSON.parse content-json)
                     (js->clj :keywordize-keys true))
-        obj-properties (buildable-properties (dissoc content :name) input-class export-properties)
+        objects (mapv #(hash-map :name (:name %)
+                                 :properties (buildable-properties (dissoc % :name) input-class export-properties))
+                      (if many-objects content [content]))
         export-classes (merge (zipmap (distinct
                                        (concat (mapcat :build/tags (vals (:properties (get user-config input-class))))
                                                ;; We may not use all of these but easier than walking build/page's
@@ -165,14 +177,19 @@
         pages-and-blocks
         (if block-import
           [{:page {:build/journal (date-time-util/date->int (new js/Date))}
-            :blocks [{:block/title (:name content)
-                      :build/tags [input-class]
-                      :build/properties obj-properties}]}]
-          [{:page {:block/title (:name content)
-                   :build/tags [input-class]
+            :blocks (mapv (fn [obj]
+                            {:block/title (:name obj)
+                             :build/tags [input-class]
+                             :build/properties (:properties obj)})
+                          objects)}]
+          (mapv (fn [obj]
+                  {:page
+                   {:block/title (:name obj)
+                    :build/tags [input-class]
                    ;; Allows upsert of existing page
-                   :build/keep-uuid? true
-                   :build/properties obj-properties}}])
+                    :build/keep-uuid? true
+                    :build/properties (:properties obj)}})
+                objects))
         export-map
         {:properties (merge export-properties
                             {:user.property/importedAt
@@ -185,7 +202,7 @@
 
 (defn- structured-chat
   [{:keys [input-class] :as input-map} export-properties args options]
-  (let [post-body (->post-body input-map export-properties args)
+  (let [post-body (->post-body input-map export-properties args options)
         post-body' (clj->js post-body :keyword-fn #(subs (str %) 1))]
     ;; TODO: Try javascript approach for possibly better results
     ;; Uses chat endpoint as described in https://ollama.com/blog/structured-outputs
@@ -227,8 +244,8 @@
    :random-properties {:alias :R
                        :desc "Random number of properties to fetch for top-level object"
                        :coerce :long}
-   :verbose {:alias :v
-             :desc "Print more info"}})
+   :many-objects {:alias :m
+                  :desc "Query is for multiple comma separated objects"}})
 
 (defn- error [msg]
   (println (str "Error: " msg))
@@ -288,9 +305,8 @@
                                                (assoc :build/property-classes
                                                       (mapv :db/ident (:logseq.property/classes %))))))
                                (into {}))]
-    (when (:verbose options) (println "DB contains" (count (d/datoms @conn :eavt)) "datoms"))
     (if (:json-schema-inspect options)
-      (pprint/pprint (generate-json-schema-format input-map export-properties))
+      (pprint/pprint (generate-json-schema-format input-map export-properties options))
       (structured-chat input-map export-properties args'' options))))
 
 #js {:main -main}
