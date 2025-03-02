@@ -11,7 +11,8 @@
             [malli.json-schema :as json-schema]
             [promesa.core :as p]
             ["path" :as node-path]
-            ["os" :as os]))
+            ["os" :as os]
+            [logseq.db :as ldb]))
 
 (def user-config
   "Configure what to query per class/tag. Each class has a map consisting of the following keys:
@@ -24,7 +25,7 @@
                             :schema.property/datePublished :schema.property/url]
     :properties
     {:schema.property/actor
-     {:chat/properties [:schema.property/url #_ #_:schema.property/birthDate :schema.property/hasOccupation]}
+     {:chat/properties [:schema.property/url #_#_:schema.property/birthDate :schema.property/hasOccupation]}
      :schema.property/director
      {:chat/properties [:schema.property/url]}
      :schema.property/musicBy
@@ -32,7 +33,7 @@
 
    :schema.class/Book
    {:chat/class-properties [:schema.property/author :schema.property/datePublished :schema.property/url
-                            #_ #_:schema.property/abridged :schema.property/numberOfPages]
+                            #_#_:schema.property/abridged :schema.property/numberOfPages]
     :properties
     {:schema.property/author
      {:build/tags [:schema.class/Person] :chat/properties [:schema.property/url]}}}
@@ -106,10 +107,10 @@
       (apply vector
              (or (get-in user-config [input-class :properties k :chat-ident]) k)
              (define-chat-schema input-map export-properties k)))
-   (distinct
-    (concat (:chat/class-properties (input-class user-config))
-            input-properties
-            input-global-properties)))))
+    (distinct
+     (concat (:chat/class-properties (input-class user-config))
+             input-properties
+             input-global-properties)))))
 
 (defn- generate-json-schema-format [input-map export-properties]
   ;; (pprint/pprint (->chat-properties-schema input-map export-properties))
@@ -226,12 +227,27 @@
    :global-properties {:alias :P
                        :desc "Global properties to fetch for all objects"
                        :coerce []}
+   :random-properties {:alias :R
+                       :desc "Random number of properties to fetch for top-level object"
+                       :coerce :long}
    :verbose {:alias :v
              :desc "Print more info"}})
 
 (defn- error [msg]
   (println (str "Error: " msg))
   (js/process.exit 1))
+
+(defn- translate-input-property [input]
+  (if (= "description" input) :logseq.property/description (keyword "schema.property" input)))
+
+(defn- get-class-properties
+  [class]
+  (let [class-parents (ldb/get-classes-parents [class])]
+    (->> (mapcat (fn [class]
+                   (:logseq.property.class/properties class))
+                 (concat [class] class-parents))
+         (map :db/ident)
+         distinct)))
 
 (defn -main [& args]
   (let [[graph-dir & args'] args
@@ -242,19 +258,23 @@
             (js/process.exit 1))
         [dir db-name] (get-dir-and-db-name graph-dir)
         conn (sqlite-cli/open-db! dir db-name)
-        input-class
+        input-class-ent
         (or (->>
-             (d/q '[:find [(pull ?b [:db/ident]) ...]
+             (d/q '[:find [?b ...]
                     :in $ ?name
                     :where [?b :block/tags :logseq.class/Tag] [?b :block/name ?name]]
                   @conn
                   (string/lower-case (first args'')))
              first
-             :db/ident)
+             (d/entity @conn))
             (error (str "No class found for" (pr-str (first args'')))))
+        input-class (:db/ident input-class-ent)
         input-map {:input-class input-class
-                   :input-properties (mapv #(keyword "schema.property" %) (:properties options))
-                   :input-global-properties (mapv #(keyword "schema.property" %) (:global-properties options))}
+                   :input-properties (into (mapv translate-input-property (:properties options))
+                                           (when (:random-properties options)
+                                             (take (:random-properties options)
+                                                   (shuffle (get-class-properties input-class-ent)))))
+                   :input-global-properties (mapv translate-input-property (:global-properties options))}
         export-properties (->> (:chat/class-properties (input-class user-config))
                                (concat (mapcat :chat/properties (vals (:properties (get user-config input-class)))))
                                (concat (:input-properties input-map))
