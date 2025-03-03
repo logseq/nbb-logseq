@@ -266,7 +266,7 @@
           :desc "Print help"}
    :block-import {:alias :b
                   :desc "Import object as block in today's journal"}
-   :raw {:alias :r
+   :raw {:alias :R
          :desc "Print raw json chat response instead of Logseq EDN"}
    :json-schema-inspect {:alias :j
                          :desc "Print json schema to submit and don't submit to chat"}
@@ -277,7 +277,7 @@
                        :desc "Global properties to fetch for all objects"
                        :coerce []
                        :default ["url"]}
-   :random-properties {:alias :R
+   :random-properties {:alias :r
                        :desc "Random number of properties to fetch for top-level object"
                        :coerce :long}
    :many-objects {:alias :m
