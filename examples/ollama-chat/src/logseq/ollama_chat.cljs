@@ -2,6 +2,7 @@
   (:require [babashka.cli :as cli]
             [cljs.pprint :as pprint]
             [clojure.string :as string]
+            [clojure.walk :as walk]
             [datascript.core :as d]
             [logseq.common.util :as common-util]
             [logseq.common.util.date-time :as date-time-util]
@@ -91,7 +92,7 @@
                                             (concat input-global-properties)
                                             distinct)]
                     (into
-                     [:map [:name :string]]
+                     [:map [:name {:min 2} :string]]
                      (map #(apply vector % (->property-value-schema input-map export-properties %))
                           obj-properties)))
                   (get prop->malli-type prop-type))
@@ -111,7 +112,7 @@
                        export-properties {:keys [many-objects]}]
   (let [schema
         (into
-         [:map [:name :string]]
+         [:map [:name {:min 2} :string]]
          (map
           (fn [k]
             (apply vector
@@ -172,6 +173,24 @@
                      (prop-value v)))])))
        (into {:user.property/importedAt (common-util/time-ms)})))
 
+(defn- remove-invalid-properties [pages-and-blocks*]
+  (let [urls (atom #{})
+        _ (walk/postwalk (fn [f]
+                           (when (and (vector? f) (= :schema.property/url (first f)))
+                             (swap! urls conj (second f)))
+                           f)
+                         pages-and-blocks*)
+        ;; Won't need regex check if ollama ever supports regex 'pattern' option
+        invalid-urls (remove #(re-find #"^(https?)://.*$" %) @urls)
+        pages-and-blocks (walk/postwalk (fn [f]
+                                          (if (and (map? f) (contains? (set invalid-urls) (:schema.property/url f)))
+                                            (dissoc f :schema.property/url)
+                                            f))
+                                        pages-and-blocks*)]
+    {:pages-and-blocks pages-and-blocks
+     :urls @urls
+     :invalid-urls invalid-urls}))
+
 (defn- print-export-map
   [body input-class export-properties {:keys [block-import many-objects]}]
   (let [content-json (.. body -message -content)
@@ -186,7 +205,7 @@
                                                (mapcat :build/property-classes (vals export-properties))))
                                       (repeat {}))
                               {input-class {}})
-        pages-and-blocks
+        pages-and-blocks*
         (if block-import
           [{:page {:build/journal (date-time-util/date->int (new js/Date))}
             :blocks (mapv (fn [obj]
@@ -202,6 +221,7 @@
                     :build/keep-uuid? true
                     :build/properties (:properties obj)}})
                 objects))
+        {:keys [pages-and-blocks invalid-urls urls]} (remove-invalid-properties pages-and-blocks*)
         export-map
         {:properties (merge export-properties
                             {:user.property/importedAt
@@ -212,7 +232,9 @@
     (#'sqlite-export/ensure-export-is-valid export-map)
     (pprint/pprint export-map)
     (when (command-exists? "pbcopy")
-      (copy-to-clipboard (with-out-str (pprint/pprint export-map))))))
+      (copy-to-clipboard (with-out-str (pprint/pprint export-map))))
+    (when (seq invalid-urls)
+      (println (str (count invalid-urls) "/" (count urls)) "urls were removed for being invalid:" (pr-str (vec invalid-urls))))))
 
 (defn- structured-chat
   [{:keys [input-class] :as input-map} export-properties args options]
