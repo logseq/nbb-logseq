@@ -300,8 +300,8 @@
          distinct)))
 
 (defn -main [& args]
-  (let [[graph-dir & args'] args
-        {options :opts args'' :args} (cli/parse-args args' {:spec spec})
+  (let [{options :opts args' :args} (cli/parse-args args {:spec spec})
+        [graph-dir & args''] args'
         _ (when (or (nil? graph-dir) (:help options))
             (println (str "Usage: $0 GRAPH-NAME TAG [& ARGS] [OPTIONS]\nOptions:\n"
                           (cli/format-opts {:spec spec})))
