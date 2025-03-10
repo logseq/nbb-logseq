@@ -33,6 +33,7 @@ Remaining fns are used by the community"
   {'to-long (copy-var tc/to-long coerce-ns)
    'from-long (copy-var tc/from-long coerce-ns)
    'to-local-date (copy-var tc/to-local-date coerce-ns)
+   'to-date (copy-var tc/to-date coerce-ns)
    'to-local-date-time (copy-var tc/to-local-date-time coerce-ns)})
 
 (def format-namespace
