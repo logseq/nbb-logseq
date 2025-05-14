@@ -1,6 +1,5 @@
 .shadow-cljs
 node_modules
-lib
 shadow-cljs.edn
 /report.html
 /test/libraries
