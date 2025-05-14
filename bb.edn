@@ -22,6 +22,8 @@
    :deps/root "features/datascript-transit"}
   #_{:local/root "../nbb-features/features/datascript-transit"}
   cljs-time/deps {:local/root "features/cljs-time"}
+  ;; nbb comes with cljs-bean but not cljs-bean.transit
+  cljs-bean-transit/deps {:local/root "features/cljs-bean-transit"}
   ordered/deps {:local/root "features/ordered"}}
 
  :tasks
