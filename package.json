@@ -1,6 +1,6 @@
 {
   "name": "@logseq/nbb-logseq",
-  "version": "1.2.173-feat-db-v22",
+  "version": "1.2.173-feat-db-v23",
   "type": "module",
   "main": "index.mjs",
   "bin": {
