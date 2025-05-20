@@ -17,7 +17,7 @@ nbb-logseq query.cljs docs '[:find (pull ?b [*]) :where [?b :block/marker]]'
   {:timestamps [], :properties [], :start-pos 774, :end-pos 824},
   :block/format :markdown,
   :block/level 3,
-  :block/content "LATER [#A] research balalah is a top priority",
+  :block/title "LATER [#A] research balalah is a top priority",
   :db/id 6361,
   :block/path-refs [{:db/id 5} {:db/id 14} {:db/id 1969}],
   :block/parent {:db/id 6360},
