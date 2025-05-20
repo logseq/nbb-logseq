@@ -6,8 +6,7 @@
             [datascript.core :as d]
             [logseq.common.util :as common-util]
             [logseq.common.util.date-time :as date-time-util]
-            #_:clj-kondo/ignore
-            [logseq.db.sqlite.cli :as sqlite-cli]
+            [logseq.db.common.sqlite-cli :as sqlite-cli]
             [logseq.db.sqlite.export :as sqlite-export]
             [malli.json-schema :as json-schema]
             [promesa.core :as p]

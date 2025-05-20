@@ -5,7 +5,7 @@ This example demonstrates a Logseq DB graph extracting data from [an Ollama LLM]
 ## Setup
 
 * Install dependencies for the script:
-    * Install node.js >= 20 and yarn.
+    * Install node.js >= 22 and yarn.
     * Run `yarn install` to install npm dependencies.
     * Install [babashka](https://github.com/babashka/babashka).
 * Setup ollama:
