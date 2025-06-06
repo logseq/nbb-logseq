@@ -2,23 +2,23 @@
  :deps
  {nbb.build/nbb.build
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "c30815b69af9d2bef153bb629d212e0dcaaf6697"
+   :git/sha "9119dbe9b5f660cb77d29058b3b762978ee4b939"
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
   nbb/nbb
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "c30815b69af9d2bef153bb629d212e0dcaaf6697"}
+   :git/sha "9119dbe9b5f660cb77d29058b3b762978ee4b939"}
   #_{:local/root "../nbb"}
   org.babashka/sci
   {:mvn/version "0.8.41"}
   datascript/deps
   {:git/url "https://github.com/logseq/nbb-features"
-   :git/sha "e49d769fcc441740fbdfdc66e9d78a26eba89fd2"
+   :git/sha "c16679a2f7327830a88fb61688e69e86eea015a0"
    :deps/root "features/datascript"}
   #_{:local/root "../nbb-features/features/datascript"}
   datascript-transit/deps
   {:git/url "https://github.com/logseq/nbb-features"
-   :git/sha "e49d769fcc441740fbdfdc66e9d78a26eba89fd2"
+   :git/sha "c16679a2f7327830a88fb61688e69e86eea015a0"
    :deps/root "features/datascript-transit"}
   #_{:local/root "../nbb-features/features/datascript-transit"}
   cljs-time/deps {:local/root "features/cljs-time"}
