@@ -12,7 +12,7 @@ This example demonstrates a Logseq DB graph extracting data from [an Ollama LLM]
     * [Install ollama](https://ollama.com/download).
     * Download and run the [llama 3.2 model](https://ollama.com/library/llama3.2) with the command: `ollama run llama3.2`. This command needs to be running while chatting.
 * Import a new DB graph with the provided [schema db file](./schema/db.sqlite) and call the graph `schema`.
-    * You can also build the schema db from scratch if you clone the logseq repository and follow the [scripts/ README](https://github.com/logseq/logseq/tree/feat/db/scripts#usage) instructions for setting up a script and then run the schema.org related script.
+    * You can also build the schema db from scratch if you clone the logseq repository and follow the [scripts/ README](https://github.com/logseq/logseq/tree/master/scripts#usage) instructions for setting up a script and then run the schema.org related script.
 
 ## Usage
 

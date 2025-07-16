@@ -63,13 +63,13 @@ All of the above pages can be customized with query config options."
      :in $ %
      :where
      (page-property ?b :type "Class")
-     [?b :block/original-name ?n]
+     [?b :block/title ?n]
      (page-property ?b2 :type ?n)]})
 
 (defn- propertify
   [result]
   (map #(assoc (:block/properties %)
-               :block/original-name (:block/original-name %))
+               :block/title (:block/title %))
        result))
 
 (defn- page-url [page-name config]
@@ -80,7 +80,7 @@ All of the above pages can be customized with query config options."
   [m {:keys [url-property] :as config} property-map]
   (mapcat
    (fn [prop]
-     (map #(vector (page-url (:block/original-name m) config)
+     (map #(vector (page-url (:block/title m) config)
                    (or (url-property (get property-map prop))
                        (page-url (name prop) config))
                    %)
@@ -88,7 +88,7 @@ All of the above pages can be customized with query config options."
             ;; If a collection, they are refs/pages
             (if (coll? v) (map #(page-url % config) v) [v]))))
    ;; Consider mapping alias and title map to rdf properties sometime
-   (keys (dissoc m :block/original-name :alias :title))))
+   (keys (dissoc m :block/title :alias :title))))
 
 (defn- add-classes [db config property-map]
   (->> (d/q (:class-query config)
@@ -129,7 +129,7 @@ All of the above pages can be customized with query config options."
                              (rules/extract-rules file-rules/query-dsl-rules))
                         (map first)
                         propertify)
-        property-map (into {} (map (juxt (comp keyword :block/original-name) identity)
+        property-map (into {} (map (juxt (comp keyword :block/title) identity)
                                    properties))]
 
     (concat

@@ -7,7 +7,7 @@ in to existing ones.
 
 ## Setup
 
-* Install node.js >= 16 and yarn.
+* Install node.js >= 22 and yarn.
 * Run `yarn install` to install npm dependencies.
 * Install [babashka](https://github.com/babashka/babashka)
 
