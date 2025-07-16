@@ -1,0 +1,7 @@
+[{:name logseq/cljs-bean-transit
+  :namespaces [cljs-bean.transit]
+  :js "./nbb_cljs_bean_transit.js"
+  :shadow-config
+  {:modules
+   {:nbb_cljs_bean_transit {:init-fn nbb.impl.cljs-bean-transit/init
+                            :depends-on #{:nbb_core :nbb_cljs_bean :nbb_transit}}}}}]

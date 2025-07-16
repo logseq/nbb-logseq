@@ -7,7 +7,8 @@
    [clojure.edn :as edn]
    [goog.string :as gstring]
    [logseq.graph-parser.cli :as gp-cli]
-   [logseq.db.rules :as rules]
+   [logseq.db.file-based.rules :as file-rules]
+   [logseq.db.frontend.rules :as rules]
    [datascript.core :as d]))
 
 (def app (express))
@@ -41,8 +42,8 @@
                      query' (if add-rules? (into query [:in '$ '%]) query)
                      _ (println "Query:" (pr-str query'))
                      res (map first
-                              (apply d/q query' @@db-conn
-                                (if add-rules? [(vals rules/query-dsl-rules)] [])))]
+                              (d/q query' @@db-conn
+                                (if add-rules? (rules/extract-rules file-rules/query-dsl-rules)  [])))]
                  (with-out-str
                    (pprint/pprint res))))))
 

@@ -2,23 +2,30 @@
  :deps
  {nbb.build/nbb.build
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "35e4e94966d0ae45bb87569940b7c1fb05c19467"
+   :git/sha "9119dbe9b5f660cb77d29058b3b762978ee4b939"
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
   nbb/nbb
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "35e4e94966d0ae45bb87569940b7c1fb05c19467"
-   :git/tag "v1.2.173"}
+   :git/sha "9119dbe9b5f660cb77d29058b3b762978ee4b939"}
   #_{:local/root "../nbb"}
+  org.babashka/sci
+  {:mvn/version "0.8.41"}
   datascript/deps
-  {:git/url "https://github.com/babashka/nbb-features"
-   :git/sha "912ca86f1744b80d58d2c5c613df3a77d9f8624e"
+  {:git/url "https://github.com/logseq/nbb-features"
+   :git/sha "c16679a2f7327830a88fb61688e69e86eea015a0"
    :deps/root "features/datascript"}
+  #_{:local/root "../nbb-features/features/datascript"}
   datascript-transit/deps
-  {:git/url "https://github.com/babashka/nbb-features"
-   :git/sha "912ca86f1744b80d58d2c5c613df3a77d9f8624e"
+  {:git/url "https://github.com/logseq/nbb-features"
+   :git/sha "c16679a2f7327830a88fb61688e69e86eea015a0"
    :deps/root "features/datascript-transit"}
-  cljs-time/deps {:local/root "features/cljs-time"}}
+  #_{:local/root "../nbb-features/features/datascript-transit"}
+  cljs-time/deps {:local/root "features/cljs-time"}
+  ;; nbb comes with cljs-bean but not cljs-bean.transit
+  cljs-bean-transit/deps {:local/root "features/cljs-bean-transit"}
+  rewrite-clj/deps {:local/root "features/rewrite-clj"}
+  ordered/deps {:local/root "features/ordered"}}
 
  :tasks
  {:requires ([babashka.fs :as fs]

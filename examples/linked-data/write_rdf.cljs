@@ -13,7 +13,8 @@ All of the above pages can be customized with query config options."
             ["fs" :as fs]
             [clojure.string :as string]
             [datascript.core :as d]
-            [logseq.db.rules :as rules]
+            [logseq.db.frontend.rules :as rules]
+            [logseq.db.file-based.rules :as file-rules]
             [logseq.graph-parser.cli :as gp-cli]
             [nbb.core :as nbb]))
 
@@ -62,13 +63,13 @@ All of the above pages can be customized with query config options."
      :in $ %
      :where
      (page-property ?b :type "Class")
-     [?b :block/original-name ?n]
+     [?b :block/title ?n]
      (page-property ?b2 :type ?n)]})
 
 (defn- propertify
   [result]
   (map #(assoc (:block/properties %)
-               :block/original-name (:block/original-name %))
+               :block/title (:block/title %))
        result))
 
 (defn- page-url [page-name config]
@@ -79,7 +80,7 @@ All of the above pages can be customized with query config options."
   [m {:keys [url-property] :as config} property-map]
   (mapcat
    (fn [prop]
-     (map #(vector (page-url (:block/original-name m) config)
+     (map #(vector (page-url (:block/title m) config)
                    (or (url-property (get property-map prop))
                        (page-url (name prop) config))
                    %)
@@ -87,12 +88,12 @@ All of the above pages can be customized with query config options."
             ;; If a collection, they are refs/pages
             (if (coll? v) (map #(page-url % config) v) [v]))))
    ;; Consider mapping alias and title map to rdf properties sometime
-   (keys (dissoc m :block/original-name :alias :title))))
+   (keys (dissoc m :block/title :alias :title))))
 
 (defn- add-classes [db config property-map]
   (->> (d/q (:class-query config)
             db
-            (vals rules/query-dsl-rules))
+            (rules/extract-rules file-rules/query-dsl-rules))
        (map first)
        propertify
        (mapcat #(triplify % config property-map))))
@@ -109,7 +110,7 @@ All of the above pages can be customized with query config options."
               [(contains? ?names ?n)]]
             db
             (set (map string/lower-case (:additional-pages config)))
-            (vals rules/query-dsl-rules))
+            (rules/extract-rules file-rules/query-dsl-rules))
        (map first)
        propertify
        (mapcat #(triplify % config property-map))))
@@ -117,7 +118,7 @@ All of the above pages can be customized with query config options."
 (defn- add-class-instances [db config property-map]
   (->> (d/q (:class-instances-query config)
             db
-            (vals rules/query-dsl-rules))
+            (rules/extract-rules file-rules/query-dsl-rules))
        (map first)
        propertify
        (mapcat #(triplify % config property-map))))
@@ -125,10 +126,10 @@ All of the above pages can be customized with query config options."
 (defn- create-quads [_writer db config]
   (let [properties (->> (d/q (:property-query config)
                              db
-                             (vals rules/query-dsl-rules))
+                             (rules/extract-rules file-rules/query-dsl-rules))
                         (map first)
                         propertify)
-        property-map (into {} (map (juxt (comp keyword :block/original-name) identity)
+        property-map (into {} (map (juxt (comp keyword :block/title) identity)
                                    properties))]
 
     (concat
@@ -142,7 +143,7 @@ All of the above pages can be customized with query config options."
           (map (fn [q]
                  (map #(if (and (string? %) (string/starts-with? % "http"))
                          (.namedNode DataFactory %)
-                         (.literal DataFactory (name %)))
+                         (.literal DataFactory (if (boolean? %) % (name %))))
                       q))
                quads)]
     (.addQuad writer (.quad DataFactory q1 q2 q3))))

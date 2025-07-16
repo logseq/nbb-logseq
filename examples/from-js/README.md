@@ -7,7 +7,7 @@ examples](https://github.com/babashka/nbb#calling-nbb-from-javascript).
 
 ## Setup
 
-* Install node.js >= 16 and yarn.
+* Install node.js >= 22 and yarn.
 * Run `yarn install` to install npm dependencies.
 * Install [babashka](https://github.com/babashka/babashka)
 
@@ -25,18 +25,18 @@ Datalog query the Logseq app can, but from the commandline. Here's how to use
 this script:
 
 ```sh
-# First clone an example graph like the logseq docs
-$ git clone https://github.com/logseq/docs && cd docs
+# First clone an example graph like this user's graph
+$ git clone https://github.com/pengx17/knowledge-garden && cd knowledge-garden
 
 # Print all the page names in the graph
-$ node query.mjs . '[:find ?n :where [?b :block/name ?n]]'
+$ node ../query.mjs . '[:find ?n :where [?b :block/name ?n]]'
 Parsing 269 files...
 [
   "setting___enable journals",
 ...
 
 # Print all the tasks' contents
-$ node query.mjs . '[:find (pull ?b [:block/content]) :where (task ?b #{"TODO"})]'
+$ node ../query.mjs . '[:find (pull ?b [:block/title]) :where (task ?b #{"DONE"})]'
 Parsing 269 files...
 [
   {
@@ -86,8 +86,8 @@ $ yarn nbb-logseq -m graph-ast/-main -h
 
 Here's how to use this script:
 ```sh
-# First clone an example graph like the logseq docs
-$ git clone https://github.com/logseq/docs && cd docs
+# First clone an example graph like this user's graph
+$ git clone https://github.com/pengx17/knowledge-garden && cd knowledge-garden
 
 # Saves all ast data in the graph.
 $ logseq-graph-ast . -o asts.edn

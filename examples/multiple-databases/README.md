@@ -5,7 +5,7 @@ capable of querying across multiple databases as [these tests demonstrate](https
 
 ## Setup
 
-* Install node.js >= 16 and yarn.
+* Install node.js >= 22 and yarn.
 * Run `yarn install` to install npm dependencies.
 * Install [babashka](https://github.com/babashka/babashka)
 

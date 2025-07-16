@@ -1,0 +1,7 @@
+[{:name logseq/rewrite-clj
+  :namespaces [rewrite-clj.node rewrite-clj.parser rewrite-clj.paredit rewrite-clj.zip]
+  :js "./nbb_rewrite_clj.js"
+  :shadow-config
+  {:modules
+   {:nbb_rewrite_clj {:init-fn nbb.impl.rewrite-clj/init
+                      :depends-on #{:nbb_core :nbb_goog_string}}}}}]

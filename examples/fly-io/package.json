@@ -1,9 +1,9 @@
 {
   "name": "mysite",
   "dependencies": {
-    "@logseq/nbb-logseq": "^1.1.155",
+    "@logseq/nbb-logseq": "logseq/nbb-logseq#feat-db-v24",
     "express": "^4.18.1",
-    "mldoc": "1.5.1"
+    "mldoc": "1.5.9"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

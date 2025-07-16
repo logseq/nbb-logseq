@@ -34,6 +34,17 @@ $ nbb-logseq -e '(+ 1 2 3)'
 6
 ```
 
+## Database Version
+
+To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v24`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a desktop release.
+
+Unlike file graphs, DB graphs can be written by scripts. This is powerful and opens up more use cases for scripting. To write your own script, you'll need a package.json and nbb.edn. Use [this example package.json](https://github.com/logseq/publish-spa/blob/feat/db/package.json) and [this example nbb.edn](https://github.com/logseq/publish-spa/blob/feat/db/nbb.edn). Some example database graph scripts:
+
+* https://github.com/logseq/logseq/tree/master/deps/db/script - Scripts to query, validate and create any graph
+* https://github.com/logseq/logseq/blob/master/deps/outliner/script/transact.cljs - Script to transact (modify) nodes queried from the commandline
+* https://github.com/logseq/logseq/tree/master/scripts/src/logseq/tasks/db_graph - More complex scripts to generate graphs with all property types or with schema.org's ontology. See [this readme](https://github.com/logseq/logseq/tree/master/scripts#nbb-scripts) for using these.
+* [Example querying a LLM and a schema.org based DB graph](examples/ollama-chat/)
+
 ## Dependency Management
 
 `nbb-logseq` can use libraries from both NPM and ClojureScript. For NPM

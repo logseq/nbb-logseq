@@ -2,8 +2,8 @@
   "name": "@logseq/nbb-logseq-from-js",
   "version": "1.0.0",
   "dependencies": {
-    "@logseq/nbb-logseq": "^1.2.168",
-    "mldoc": "1.5.1"
+    "@logseq/nbb-logseq": "logseq/nbb-logseq#feat-db-v24",
+    "mldoc": "1.5.9"
   },
   "bin": {
     "logseq-graph-ast": "graph_ast.mjs"

@@ -3,6 +3,13 @@
 * Unless a version is noted below, versions map to nbb version as described in
   https://github.com/logseq/nbb-logseq/blob/main/README.md#versioning.
 
+## Unreleased
+* Alpha version of nbb-logseq which supports the database version
+* 1.3.X nbb with more included libraries: cljs-bean.transit, rewrite-clj and ordered
+* Versioned as logseq/nbb-logseq#feat-db-*
+
+## 1.2.173
+
 ## 1.1.158
 * 1.1.158 nbb with 3 new cljs-time fns for compatibility with logseq's :inputs
 

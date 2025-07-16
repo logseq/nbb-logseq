@@ -1,0 +1,7 @@
+[{:name logseq/ordered
+  :namespaces [flatland.ordered.map]
+  :js "./nbb_ordered.js"
+  :shadow-config
+  {:modules
+   {:nbb_ordered {:init-fn nbb.impl.ordered/init
+                  :depends-on #{:nbb_core}}}}}]

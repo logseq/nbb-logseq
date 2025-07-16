@@ -45,7 +45,7 @@ bb '(->> *input* (map :block/properties))'
 To try this service locally on your Logseq graph:
 
 1. Install [babashka](https://github.com/babashka/babashka) >= 0.8.156.
-2. Install node.js >= 16.3.1.
+2. Install node.js >= 22.
 3. Run `npm install` to install npm dependencies.
 4. Clone your graph: `git clone YOUR-GRAPH resources/graph`
   * If you don't have a graph, try the Logseq docs

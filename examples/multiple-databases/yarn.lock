@@ -2,12 +2,11 @@
 # yarn lockfile v1
 
 
-"@logseq/nbb-logseq@^1.1.155":
-  version "1.1.155"
-  resolved "https://registry.yarnpkg.com/@logseq/nbb-logseq/-/nbb-logseq-1.1.155.tgz#5d48d752d168dca535de7240819eda8f7bd2e581"
-  integrity sha512-byzrLwhR/laQT89zDeVJuBIfnpYPOyGRN4Oimwbr7TGHat9uXNEX9d1VSBmYEaoX2Qn/02i6ZBhiynGPrb6nnQ==
+"@logseq/nbb-logseq@logseq/nbb-logseq#feat-db-v24":
+  version "1.2.173-feat-db-v24"
+  resolved "https://codeload.github.com/logseq/nbb-logseq/tar.gz/3d5b78b0382c7253bf9874c1f38586dd338434f4"
   dependencies:
-    import-meta-resolve "^2.1.0"
+    import-meta-resolve "^4.1.0"
 
 ansi-regex@^2.0.0:
   version "2.1.1"
@@ -93,10 +92,10 @@ get-stream@^4.0.0:
   dependencies:
     pump "^3.0.0"
 
-import-meta-resolve@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.0.tgz#701aa29a044954bd135214049294745ac70dd607"
-  integrity sha512-CpPOtiCHxP9HdtDM5F45tNiAe66Cqlv3f5uHoJjt+KlaLrUh9/Wz9vepADZ78SlqEo62aDWZtj9ydMGXV+CPnw==
+import-meta-resolve@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-4.1.0.tgz#f9db8bead9fafa61adb811db77a2bf22c5399706"
+  integrity sha512-I6fiaX09Xivtk+THaMfAwnA3MVA5Big1WHF1Dfx9hFuvNIWpXnorlkzhcQf6ehrqQiiZECRt1poOAkPmer3ruw==
 
 invert-kv@^2.0.0:
   version "2.0.0"
@@ -161,10 +160,10 @@ mimic-fn@^2.0.0:
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"
   integrity sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
 
-mldoc@1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/mldoc/-/mldoc-1.5.1.tgz#570ae860d621e167e9a586f5be2b1bb96faf8bb7"
-  integrity sha512-FlmspawzeYjIegvHlUxx2VoZx2ExHKS5h+f80yCFjhuW3yeqdvq4zFP19GJGVGbAWnyTL0DfUoROf84IMAL8Fw==
+mldoc@1.5.9:
+  version "1.5.9"
+  resolved "https://registry.yarnpkg.com/mldoc/-/mldoc-1.5.9.tgz#43d740351c64285f0f4988ac9497922d54ae66fc"
+  integrity sha512-87FQ7hseS87tsk+VdpIigpu8LH+GwmbbFgpxgFwvnbH5oOjmIrc47laH4Dyggzqiy8/vMjDHkl7vsId0eXhCDQ==
   dependencies:
     yargs "^12.0.2"
 
