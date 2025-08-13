@@ -25,7 +25,8 @@
   ;; nbb comes with cljs-bean but not cljs-bean.transit
   cljs-bean-transit/deps {:local/root "features/cljs-bean-transit"}
   rewrite-clj/deps {:local/root "features/rewrite-clj"}
-  ordered/deps {:local/root "features/ordered"}}
+  ordered/deps {:local/root "features/ordered"}
+  core-match/deps {:local/root "features/core.match"}}
 
  :tasks
  {:requires ([babashka.fs :as fs]

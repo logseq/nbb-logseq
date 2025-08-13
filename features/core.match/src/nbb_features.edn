@@ -1,0 +1,7 @@
+[{:name logseq/core.match
+  :namespaces [cljs.core.match]
+  :js "./nbb_core_match.js"
+  :shadow-config
+  {:modules
+   {:nbb_core_match {:init-fn nbb.impl.core-match/init
+                     :depends-on #{:nbb_core}}}}}]
