@@ -265,7 +265,7 @@
             :else []))
         :a1))
     ;; TODO: Fix map fails on ILookup
-    #_(is
+    (is
        (= (let [x {:a 3}
                 y nil
                 z nil]
@@ -353,7 +353,7 @@
             :else 21))
         21))
     ;; TODO: Fix map fails on ILookup
-    #_(is
+    (is
        (= (let [v {:a 1}]
             (match [v]
               [{:a a}] 1
@@ -552,7 +552,7 @@
      1)
 
     ;; TODO: Fix map fails on ILookup
-    #_(is
+    (is
        (= (let [x {:a 1 :b 2 :c 10 :d 30}]
             (match [x]
               [({:a _ :b _ :c _ :d _} :only [:a :b :c :d])] :a-1
@@ -563,7 +563,7 @@
           :a-1))
 
     ;; TODO: Fix map fails on ILookup
-    #_(is
+    (is
        (and (= (let [m {:a 1}]
                  (match [m]
                    [({:a 1} :only [:a])] :a0
@@ -576,7 +576,7 @@
                :a1)))
 
     ;; TODO: Fix map fails on ILookup
-    #_(is
+    (is
        (= (let [m {:foo 1 "bar" 2}]
             (match [m]
               [{:foo 1 "bar" 2}] :a0
@@ -898,7 +898,7 @@
             :else :no-match)
           :match1))
       ;; TODO: Fix map fails on ILookup
-      #_(is
+      (is
          (= (match [m]
               [{:a (2 :<< inc) :b _}] :match1
               [{:a (3 :<< inc) :b _}] :match2
@@ -914,21 +914,21 @@
     (is (= (match 'my-sym a a) 'my-sym))
 
     ;; TODO: Fix map fails on ILookup
-    ;; (is
-    ;;  (= (let [xqq {:cz 1 :dz 2}]
-    ;;       (match [xqq]
-    ;;         [{:z a :zz b}] [:a0 a b]
-    ;;         [{:cz a :dz b}] [:a2 a b]
-    ;;         :else []))
-    ;;     [:a2 1 2]))
+    (is
+     (= (let [xqq {:cz 1 :dz 2}]
+          (match [xqq]
+            [{:z a :zz b}] [:a0 a b]
+            [{:cz a :dz b}] [:a2 a b]
+            :else []))
+        [:a2 1 2]))
 
-    ;; (is
-    ;;  (= (let [xmm {:bz 2}]
-    ;;       (match [xmm]
-    ;;         [{:az a}] [:a0 a]
-    ;;         [{:bz b}] [:a1 b]
-    ;;         :else []))
-    ;;     [:a1 2]))
+    (is
+     (= (let [xmm {:bz 2}]
+          (match [xmm]
+            [{:az a}] [:a0 a]
+            [{:bz b}] [:a1 b]
+            :else []))
+        [:a1 2]))
 
     (is
      (= (match (vector)

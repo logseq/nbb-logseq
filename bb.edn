@@ -6,9 +6,9 @@
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
   nbb/nbb
-  {:git/url "https://github.com/babashka/nbb"
+  #_{:git/url "https://github.com/babashka/nbb"
    :git/sha "9119dbe9b5f660cb77d29058b3b762978ee4b939"}
-  #_{:local/root "../nbb"}
+  {:local/root "../nbb"}
   org.babashka/sci
   {:mvn/version "0.8.41"}
   datascript/deps
