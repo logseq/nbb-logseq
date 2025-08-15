@@ -25,7 +25,8 @@
 
 (def core-namespace
   {'match (sci/copy-var match m-ns)
-   'backtrack (sci/copy-var m/backtrack m-ns)})
+   'backtrack (sci/copy-var m/backtrack m-ns)
+   'satisfies-ILookup? #(satisfies? ILookup %)})
 
 (def config {:namespaces {'cljs.core.match core-namespace}})
 

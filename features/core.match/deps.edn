@@ -1,2 +1,9 @@
 {:deps
- {viebel/abbinare {:mvn/version "1.10.597"}}}
+ ;; This is a fork of core.match to support nbb
+ ;; The logseq fork adds nbb support - tiny patch
+ ;; The viebel/abbinare fork ported core.match for use with self-hosteed cljs
+ ;; which is necessary for sci
+ {logseq/abbinare
+  {:git/url "https://github.com/logseq-cldwalker/abbinare"
+   :git/sha "1d435ea6b3c6269196c6f1b137af78790a8b767c"}
+  #_{:local/root "../../../abbinare"}}}
