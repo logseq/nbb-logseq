@@ -5,7 +5,7 @@
 
 ## Unreleased
 * Alpha version of nbb-logseq which supports the database version
-* 1.3.X nbb with more included libraries: cljs-bean.transit, rewrite-clj and ordered
+* 1.3.X nbb with more included libraries: cljs-bean.transit, rewrite-clj, core.match and ordered
 * Versioned as logseq/nbb-logseq#feat-db-*
 
 ## 1.2.173
