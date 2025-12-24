@@ -36,7 +36,7 @@ $ nbb-logseq -e '(+ 1 2 3)'
 
 ## Database Version
 
-To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v30`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a desktop release.
+To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v31`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a desktop release.
 
 Unlike file graphs, DB graphs can be written by scripts. This is powerful and opens up more use cases for scripting. To write your own script, you'll need a package.json and nbb.edn. Use [this example package.json](https://github.com/logseq/publish-spa/blob/feat/db/package.json) and [this example nbb.edn](https://github.com/logseq/publish-spa/blob/feat/db/nbb.edn). Some example database graph scripts:
 
@@ -148,11 +148,11 @@ To QA that your branch works as expected on a dependent repository e.g.
 
 Until the [database version](#database-version) has a desktop release, `nbb-logseq` uses github versioning. With github versioning, releases are quick and the release is built locally on a developer's machine. To build a new version:
 
-1. Increment version of `package.json` e.g. `1.2.173-feat-db-v29` to `1.2.173-feat-db-v30`
+1. Increment version of `package.json` e.g. `1.2.173-feat-db-v29` to `1.2.173-feat-db-v31`
 2. `npm i` to update `package-lock.json`.
 3. `rm -rf .shadow-cljs && NBB_CLI_NAME=nbb-logseq NBB_NPM_LIB_NAME='@logseq/nbb-logseq' bb release`
 4. Git commit all changes including package* and lib/* changes.
-5. `git tag` the commit e.g. `git tag feat-db-v30` and git push the new tag and commit.
+5. `git tag` the commit e.g. `git tag feat-db-v31` and git push the new tag and commit.
 
 Once the desktop release occurs, nbb-logseq changes should be fewer and we can go back to the [NPM release process](#npm-release-process).
 
