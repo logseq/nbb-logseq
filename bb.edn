@@ -15,7 +15,7 @@
   ;; {:mvn/version "0.10.46"}
   datascript/deps
   {:git/url "https://github.com/logseq/nbb-features"
-   :git/sha "66d2f5673a425f3640fc9e21847ff89b8d22600d"
+   :git/sha "d57c954177490ee13eade86132d69ac1655714a8"
    :deps/root "features/datascript"}
   #_{:local/root "../nbb-features/features/datascript"}
   datascript-transit/deps
