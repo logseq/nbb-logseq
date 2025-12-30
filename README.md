@@ -148,11 +148,11 @@ To QA that your branch works as expected on a dependent repository e.g.
 
 Until the [database version](#database-version) has a desktop release, `nbb-logseq` uses github versioning. With github versioning, releases are quick and the release is built locally on a developer's machine. To build a new version:
 
-1. Increment version of `package.json` e.g. `1.2.173-feat-db-v29` to `1.2.173-feat-db-v31`
+1. Increment version of `package.json` e.g. `1.2.173-feat-db-v29` to `1.2.173-feat-db-v30`
 2. `npm i` to update `package-lock.json`.
 3. `rm -rf .shadow-cljs && NBB_CLI_NAME=nbb-logseq NBB_NPM_LIB_NAME='@logseq/nbb-logseq' bb release`
 4. Git commit all changes including package* and lib/* changes.
-5. `git tag` the commit e.g. `git tag feat-db-v31` and git push the new tag and commit.
+5. `git tag` the commit e.g. `git tag feat-db-v30` and git push the new tag and commit.
 
 Once the desktop release occurs, nbb-logseq changes should be fewer and we can go back to the [NPM release process](#npm-release-process).
 
