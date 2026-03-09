@@ -15,12 +15,12 @@
   ;; {:mvn/version "0.10.46"}
   datascript/deps
   {:git/url "https://github.com/logseq/nbb-features"
-   :git/sha "d57c954177490ee13eade86132d69ac1655714a8"
+   :git/sha "5cb178045a63c370ce53461c72c8dffc1ad3dbed"
    :deps/root "features/datascript"}
   #_{:local/root "../nbb-features/features/datascript"}
   datascript-transit/deps
   {:git/url "https://github.com/logseq/nbb-features"
-   :git/sha "010ef6b869cfb376fa8a240b2c3f88d1b7b61fc8"
+   :git/sha "5cb178045a63c370ce53461c72c8dffc1ad3dbed"
    :deps/root "features/datascript-transit"}
   #_{:local/root "../nbb-features/features/datascript-transit"}
   cljs-time/deps {:local/root "features/cljs-time"}
