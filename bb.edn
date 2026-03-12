@@ -35,7 +35,10 @@
              [nbb.build :as build]
              [clojure.string :as str])
 
-  clean (fs/delete-tree "lib")
+  clean (do
+          (fs/delete-tree "lib")
+          ;; without this some stale js is built like stale nbb-logseq version
+          (fs/delete-tree ".shadow-cljs"))
 
   npm-install (shell "npm install")
 
