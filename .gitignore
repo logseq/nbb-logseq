@@ -1,3 +1,5 @@
+/.cpcache
+/.claude
 .shadow-cljs
 node_modules
 shadow-cljs.edn

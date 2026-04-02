@@ -36,7 +36,7 @@ $ nbb-logseq -e '(+ 1 2 3)'
 
 ## Database Version
 
-To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v33`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a desktop release.
+To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v34`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a desktop release.
 
 Unlike file graphs, DB graphs can be written by scripts. This is powerful and opens up more use cases for scripting. To write your own script, you'll need a package.json and nbb.edn. Use [this example package.json](https://github.com/logseq/publish-spa/blob/feat/db/package.json) and [this example nbb.edn](https://github.com/logseq/publish-spa/blob/feat/db/nbb.edn). Some example database graph scripts:
 
@@ -95,7 +95,7 @@ Community CLIs with a `nbb.edn`:
   single page app
 
 To install or build a CLI locally, install
-[babashka](https://github.com/babashka/babashka#installation) and
+[babashka](https://github.com/babashka/babashka#installation), Java 21+ and
 [clojure](https://clojure.org/guides/install_clojure).
 
 ### Install a CLI

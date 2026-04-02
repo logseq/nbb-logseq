@@ -1,0 +1,8 @@
+{:deps
+ ;; Fixes sci transitive conflict by setting dependency at top-level.
+ ;; Conflict is between bb.edn's nbb depending on git based sci
+ ;; and nbb's sci.configs dep depending on maven based sci.
+ ;; This override is needed here because nbb.build calls clojure shell command
+ {org.babashka/sci
+  {:git/url "https://github.com/babashka/sci"
+   :git/sha "9bc5ee7371ddd24a6715066e47573f80addc98e7"}}}

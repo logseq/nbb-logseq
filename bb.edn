@@ -2,17 +2,15 @@
  :deps
  {nbb.build/nbb.build
   {:git/url "https://github.com/babashka/nbb"
-   :git/sha "62e749cdbd6706ccdbaeaf6017e4bfed5fc54704"
+   :git/sha "70fb827cd77d12da435efaf093fb763bc3090965"
    :deps/root "build"}
   #_{:local/root "../nbb/build"}
+  ;; When bumping nbb, also bump sci version in deps.edn
   nbb/nbb
-  ;; Use fork temporarily until sci build error is fixed upstream
-  {:git/url "https://github.com/logseq/nbb"
-   :git/sha "2486d72cbddb70d4c4047be9c063122fd78f6835"
+  {:git/url "https://github.com/babashka/nbb"
+   :git/sha "70fb827cd77d12da435efaf093fb763bc3090965"
    :exclusions [org.babashka/sci]}
   #_{:local/root "../nbb"}
-  ;; org.babashka/sci
-  ;; {:mvn/version "0.10.46"}
   datascript/deps
   {:git/url "https://github.com/logseq/nbb-features"
    :git/sha "49a77b405cb43e6bba8270aee736db939c8dd634"
@@ -24,7 +22,7 @@
    :deps/root "features/datascript-transit"}
   #_{:local/root "../nbb-features/features/datascript-transit"}
   cljs-time/deps {:local/root "features/cljs-time"}
-  ;; nbb comes with cljs-bean but not cljs-bean.transit
+   ;; nbb comes with cljs-bean but not cljs-bean.transit
   cljs-bean-transit/deps {:local/root "features/cljs-bean-transit"}
   rewrite-clj/deps {:local/root "features/rewrite-clj"}
   ordered/deps {:local/root "features/ordered"}
