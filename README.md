@@ -144,6 +144,19 @@ To QA that your branch works as expected on a dependent repository e.g.
 * `yarn add /path/to/nbb-logseq` in a dependent's repo.
 * Run `yarn nbb-logseq FILE.cljs` to run a given file. The graph-parser can confirm all it's namespaces load nbb-logseq with `bb test:load-all-namespaces-with-nbb`.
 
+### Update or Add a Library
+
+If our forked datascript or datascript-transit has been updated, then do the following:
+* Update https://github.com/logseq/nbb-features to include latest updates to our datascript fork
+* Update bb.edn and update `datascript/deps` or `datascript-transit/deps` to point to latest :git/sha.
+* Cut a new release
+
+If a new ClojureScript library needs to be made nbb compatible:
+* Add a new feature directory under `features/` using other feature directories as an example
+* Be sure to add a nbb_features.edn, a deps.edn and a `nbb.impl.YOUR-LIBRARY`
+* Add a new dep to bb.edn using others like `rewrite-clj/deps` as an example
+* Cut a new release
+
 ### DB Release process
 
 Until the [database version](#database-version) has a stable desktop release, `nbb-logseq` uses github versioning. With github versioning, releases are quick and the release is built locally on a developer's machine. To build a new version:
