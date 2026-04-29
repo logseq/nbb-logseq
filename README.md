@@ -36,7 +36,7 @@ $ nbb-logseq -e '(+ 1 2 3)'
 
 ## Database Version
 
-To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v34`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a desktop release.
+To use `nbb-logseq` with [the database version](https://github.com/logseq/logseq#-database-version), specify the version as `logseq/nbb-logseq#feat-db-v34`. This version is only available through github and has not been released to npm. An npm version will be released when the database version has a stable desktop release.
 
 Unlike file graphs, DB graphs can be written by scripts. This is powerful and opens up more use cases for scripting. To write your own script, you'll need a package.json and nbb.edn. Use [this example package.json](https://github.com/logseq/publish-spa/blob/feat/db/package.json) and [this example nbb.edn](https://github.com/logseq/publish-spa/blob/feat/db/nbb.edn). Some example database graph scripts:
 
@@ -146,7 +146,7 @@ To QA that your branch works as expected on a dependent repository e.g.
 
 ### DB Release process
 
-Until the [database version](#database-version) has a desktop release, `nbb-logseq` uses github versioning. With github versioning, releases are quick and the release is built locally on a developer's machine. To build a new version:
+Until the [database version](#database-version) has a stable desktop release, `nbb-logseq` uses github versioning. With github versioning, releases are quick and the release is built locally on a developer's machine. To build a new version:
 
 1. Increment version of `package.json` e.g. `1.2.173-feat-db-v29` to `1.2.173-feat-db-v30`
 2. `npm i` to update `package-lock.json`.
